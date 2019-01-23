@@ -1,0 +1,122 @@
+<template>
+  <div style="width: 100%">
+    <div slot="header" class="clearfix" style="padding-bottom:16px;border-bottom: 1px solid #ebeef5">
+      <h4>个人信息</h4>
+      <el-button style="float: right; padding: 3px 0" type="text" @click="savePersonalInfo()">保存</el-button>
+    </div>
+    <div style="padding-left: 5%;font-size: 16px;margin-top: 50px">
+      <p>昵称：<el-input v-model="info.name" placeholder="请输入昵称,长度2-10" style="width: 180px"></el-input></p><br>
+      <p>邮箱：{{info.email}}</p><br>
+      <p>密码：<el-input v-model="info.password" type="password" placeholder="请输入密码,长度6-15" style="width: 180px"></el-input></p><br>
+      <p>等级：{{info.level}}</p><br>
+      <p>电话：<el-input v-model="info.phone" placeholder="请输入电话" style="width: 150px"></el-input></p><br>
+      <p>地址：</p>
+      <el-table
+        :data="info.addresses"
+        border>
+        <el-table-column
+          fixed
+          label="地址"
+          prop="location">
+        </el-table-column>
+        <el-table-column
+          fixed
+          label="操作"
+          width="100">
+          <template slot-scope="scope">
+            <el-button @click="deleteRow(scope.row)" type="text" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <p style="font-size: 14px;margin-left: 10px;margin-top: 10px">新增地址:</p>
+      <el-select
+        v-model="newAddress"
+        filterable
+        remote
+        reserve-keyword
+        suffix-icon="el-icon-search"
+        placeholder="请输入地址"
+        :remote-method="remoteMethod"
+        :loading="loading"
+      style="min-width: 600px">
+        <el-option
+          v-for="item in options"
+          :key="item.name"
+          :value="item.name">
+        </el-option>
+      </el-select>
+    </div>
+  </div>
+</template>
+
+<script>
+    export default {
+        name: "editPersonalInfo",
+      data(){
+        return{
+          info:{
+            name:"Starink",
+            email:"shiyifan198@163.com",
+            level:3,
+            phone:"18252605889",
+            password:"123456",
+            addresses:[
+              {location:'江苏省南京市鼓楼区汉口路22号,南京大学陶园二舍'},
+              {location:'江苏省南京市栖霞区仙林大道163号，南京大学学生宿舍1栋'}
+            ]
+          },
+          options: [],
+          newAddress: "",
+          list: [],
+          loading: false,
+        }
+      },
+      mounted() {
+        this.$axios.post('/personalCenter/getInfo', {uid: localStorage.uid}).then(
+          res => {
+            // localStorage.ifUnread=res.data.ifUnread;
+            // localStorage.photoSrc=res.data.photoSrc;
+            // self.$router.replace({
+            //   path: '/',
+            //   query: { redirect: self.$router.currentRoute.path }})
+          }).catch(err => {
+          console.log(err)
+        });
+      },
+      methods:{
+        savePersonalInfo(){
+
+        },
+        deleteRow(row) {
+          this.info.addresses.splice(row,1);
+        },
+
+        remoteMethod(query) {
+          if (query !== '') {
+            this.loading = true;
+            this.$axios.post('/personalCenter/getInfo', {keyword: query}).then(
+              res => {
+                this.options = res.data.list;
+                this.loading = false;
+              }).catch(err => {
+                this.loading = false
+              });
+          } else {
+            // this.options = [];
+          }
+        },
+        addressSelected(value) {
+          this.info.addresses.push({location:value});
+        }
+
+      }
+
+    }
+</script>
+
+<style scoped>
+  h4{
+    margin: 0;
+    display: inline-block;
+  }
+</style>
