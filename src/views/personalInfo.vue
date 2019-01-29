@@ -2,7 +2,7 @@
   <div style="width: 100%">
     <div slot="header" class="clearfix" style="padding-bottom:16px;border-bottom: 1px solid #ebeef5">
       <h4>个人信息</h4>
-      <a href="/personalCenter/editPersonalInfo"><el-button style="float: right; padding: 3px 0" type="text">编辑</el-button></a>
+      <a href="/user/personalCenter/editPersonalInfo"><el-button style="float: right; padding: 3px 0" type="text">编辑</el-button></a>
     </div>
     <div style="padding-left: 5%;font-size: 16px;margin-top: 50px">
       <p>昵称：{{info.name}}</p><br>
@@ -33,6 +33,13 @@
               ]
             }
           }
+      },
+      mounted(){
+        this.$axios.post("/user/getInfo", {"uid":localStorage.uid}).then(res => {
+          let data=res.data;
+          //console.log(data);
+          this.info=data;
+        });
       }
     }
 </script>

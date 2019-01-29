@@ -38,6 +38,7 @@
         placeholder="请输入地址"
         :remote-method="remoteMethod"
         :loading="loading"
+        @change="addressSelected"
       style="min-width: 600px">
         <el-option
           v-for="item in options"
@@ -55,6 +56,7 @@
       data(){
         return{
           info:{
+            uid: localStorage.uid,
             name:"Starink",
             email:"shiyifan198@163.com",
             level:3,
@@ -72,20 +74,31 @@
         }
       },
       mounted() {
-        this.$axios.post('/personalCenter/getInfo', {uid: localStorage.uid}).then(
+        this.$axios.post('/user/getInfo', {uid: localStorage.uid}).then(
           res => {
-            // localStorage.ifUnread=res.data.ifUnread;
-            // localStorage.photoSrc=res.data.photoSrc;
-            // self.$router.replace({
-            //   path: '/',
-            //   query: { redirect: self.$router.currentRoute.path }})
+            this.info=res.data;
           }).catch(err => {
           console.log(err)
         });
       },
       methods:{
         savePersonalInfo(){
-
+          this.info.uid=localStorage.uid;
+          console.log(this.info.uid);
+          this.$axios.post("/user/saveInfo", this.info).then(res => {
+            let data=res.data;
+            console.log(data);
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            });
+            this.$router.replace('/user/personalCenter');
+          }).catch(err => {
+            this.$message({
+              message: '修改失败',
+              type: 'error'
+            });
+          });
         },
         deleteRow(row) {
           this.info.addresses.splice(row,1);
@@ -94,7 +107,7 @@
         remoteMethod(query) {
           if (query !== '') {
             this.loading = true;
-            this.$axios.post('/personalCenter/getInfo', {keyword: query}).then(
+            this.$axios.post('/address/getSimilarLocation', {keyword: query}).then(
               res => {
                 this.options = res.data.list;
                 this.loading = false;
@@ -106,7 +119,7 @@
           }
         },
         addressSelected(value) {
-          this.info.addresses.push({location:value});
+          this.info.addresses.push({tid:0,uid: parseInt(localStorage.uid),location:value});
         }
 
       }

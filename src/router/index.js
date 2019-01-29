@@ -6,7 +6,8 @@ import signup from '@/views/signup'
 
 Vue.use(Router)
 
-export default new Router({
+
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -24,41 +25,71 @@ export default new Router({
       component: signup
     },
     {
-      path: "/personalCenter",
-      component: () => import("@/layout/personalLayout"),
+      path: '/user',
+      name: 'user',
+      component: () => import("@/layout/userLayout"),
       children: [
         {
-          name: "personalInfo",
-          path: "",
-          meta: { requireAuth: true },
-          component: () => import("@/views/personalInfo")
+          path: "personalCenter",
+          name: 'personalCenter',
+          component: () => import("@/layout/personalCenterLayout"),
+          children: [
+            {
+              name: "personalInfo",
+              path: "",
+              component: () => import("@/views/personalInfo")
+            },
+            {
+              name: "editPersonalInfo",
+              path: "editPersonalInfo",
+              component: () => import("@/views/editPersonalInfo")
+            },
+            {
+              name: "restaurantApply",
+              path: "restaurantApply",
+              component: () => import("@/views/restaurantApply")
+            },
+            {
+              name: "waitExamine",
+              path: "restaurantApply/waitExamine",
+              component: () => import("@/views/waitExamine")
+            },
+            {
+              name: "applySuccess",
+              path: "restaurantApply/applySuccess",
+              component: () => import("@/views/applySuccess")
+            }
+          ]
         },
-        {
-          name: "editPersonalInfo",
-          path: "editPersonalInfo",
-          meta: { requireAuth: true },
-          component: () => import("@/views/editPersonalInfo")
-        },
-        {
-          name: "restaurantApply",
-          path: "restaurantApply",
-          meta: { requireAuth: true },
-          component: () => import("@/views/restaurantApply")
-        },
-        {
-          name: "waitExamine",
-          path: "restaurantApply/waitExamine",
-          meta: { requireAuth: true },
-          component: () => import("@/views/waitExamine")
-        },
-        {
-          name: "applySuccess",
-          path: "restaurantApply/applySuccess",
-          meta: { requireAuth: true },
-          component: () => import("@/views/applySuccess")
-        }
       ]
-    },
+    }
+
   ],
-  mode:"history"
-})
+  mode:"history",
+});
+
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login'|| to.path === '/') {
+    next();
+  } else {
+    let token = localStorage.getItem('Authorization');
+
+    if (token === 'null' || token === '') {
+      next('/login');
+    } else {
+      if(to.path.indexOf("/user/")>-1&&localStorage.getItem('Authorization')!=="user"){
+        next('/login');
+      }
+      if(to.path.indexOf("/restaurant/")>-1&&localStorage.getItem('Authorization')!=="restaurant"){
+        next('/login');
+      }
+      if(to.path.indexOf("/manager/")>-1&&localStorage.getItem('Authorization')!=="manager"){
+        next('/login');
+      }
+      next();
+    }
+  }
+});
+
+export default router;

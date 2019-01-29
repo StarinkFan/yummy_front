@@ -33,8 +33,9 @@
 
 <script>
 
-  import store from '../vuex/store'
-  import * as types from '../vuex/types'
+  import store from '../vuex/store';
+  import * as types from '../vuex/types';
+  import { mapMutations } from 'vuex';
 
   export default {
       name: "login",
@@ -42,39 +43,46 @@
         store.commit(types.LOGOUT)
         if(store.getters.isRemember) {
           console.log("wocao");
-          this.account = localStorage.username;
-          this.password = window.atob(localStorage.password)
+          this.email =localStorage.email;
+          this.password = window.atob(localStorage.password);
           this.remember = true;
         }
       },
       methods: {
+        ...mapMutations(['setAuthorization']),
         login: function () {
           let self = this;
           this.$axios.post('/user/login', {email: self.email, password: self.password}).then(
             res => {
               console.log(res.data);
               //store.commit(types.LOGIN, res.data);
-              switch (res.data){
+              switch (res.data.code){
                 case 1:
+                  this.setAuthorization("user");
                   this.$message({
                     message: '用户登录成功',
                     type: 'success'
                   });
-                  self.$router.replace('/restaurantList');
+                  localStorage.uid=res.data.uid;
+                  self.$router.replace('/user/restaurantList');
                   break;
                 case 2:
+                  this.setAuthorization("restaurant");
                   this.$message({
                     message: '餐厅登录成功',
                     type: 'success'
                   });
-                  self.$router.replace('/productList');
+                  localStorage.uid=res.data.rid;
+                  self.$router.replace('/restaurant/productList');
                   break;
                 case 3:
+                  this.setAuthorization("manager");
                   this.$message({
                     message: '经理登录成功',
                     type: 'success'
                   });
-                  self.$router.replace('/applicationList');
+                  console.log(localStorage.Authorization);
+                  self.$router.replace('/manager/applicationList');
                   break;
                 case 0:
                   this.$message({
@@ -87,7 +95,7 @@
           });
           console.log(this.remember);
           if(this.remember) {
-            store.commit(types.REMEMBER, {username: this.username , password: this.password })
+            store.commit(types.REMEMBER, {email: this.email , password: this.password })
           } else {
             store.commit(types.CANCELREMEMBER)
           }

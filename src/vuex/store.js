@@ -9,25 +9,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    user: {
-      username: '',
-      roles: null
-    },
-    token: null,
-    title: '',
+    Authorization: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
     remember: false
   },
   getters: {
-    isLogin: state => {
-      console.log(localStorage.token)
-      return (localStorage.token !== null && localStorage.token !== undefined);
-    },
-    isAdmin: state => {
-      if(localStorage.roles.length > 1 && localStorage.roles.indexOf("ROLE_ADMIN") >= 0) {
-        return true;
-      }
-      return false;
-    },
     isRemember: state => {
       if(localStorage.password !== null && localStorage.password !== undefined) {
         return true;
@@ -36,38 +21,19 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setAuthorization(state, type) {
+      state.Authorization = type;
+      localStorage.setItem('Authorization', type);
+    },
 
-    [types.LOGIN]: (state, data) => {
-      localStorage.token = data['accessToken'];
-      localStorage.username = data['username'];
-      state.token = data['accessToken'];
-      state.user.username = data['username'];
-      state.user.roles = data['roles'];
-      let roles = '';
-      for(let i of state.user.roles){
-        roles += i;
-        roles += ' ';
-      }
-      localStorage.roles = roles;
-    },
-    [types.LOGOUT]: (state) => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('roles');
-      state.user.username = null;
-      state.user.roles = null;
-      state.token = null;
-    },
-    [types.TITLE]: (state, data) => {
-      state.title = data;
-    },
     [types.REMEMBER]: (state, data) => {
       state.remember = true;
-      localStorage.username = data.username;
+      localStorage.email = data.email;
       localStorage.password = window.btoa(data.password)
     },
     [types.CANCELREMEMBER]: (state) => {
-      state.remember = false
-      localStorage.removeItem('username');
+      state.remember = false;
+      localStorage.removeItem('email');
       localStorage.removeItem('password');
     }
 

@@ -1,19 +1,10 @@
 <template>
   <div>
-    <div id="navi">
-      <navi></navi>
-    </div>
     <div id="main" style="width: 100%">
       <leftNavi></leftNavi>
       <el-card class="box-card mainBody">
         <router-view></router-view>
       </el-card>
-    </div>
-    <div id="foot">
-      <foot></foot>
-    </div>
-    <div id="rightBar">
-      <rightBar></rightBar>
     </div>
   </div>
 </template>

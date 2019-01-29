@@ -10,19 +10,13 @@
             <li><a id="loan" href="/personalOrderList">我的订单</a></li>
             <li><a id="trade" href="/personalCenter">个人中心</a></li>
             <li><a id="guide" href="/guide">平台指南</a></li>
-            <el-dropdown style="float:right;position: relative;" v-if="login">
-              <span>
-                <avatar username="default" src="/static/pic/person-flat.png"></avatar>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <a  v-on:click="logout"><el-dropdown-item >退出登录</el-dropdown-item></a>
-                <a  v-on:click="logoff"><el-dropdown-item >注销账户</el-dropdown-item></a>
-
-              </el-dropdown-menu>
-            </el-dropdown>
-            <li id="last" style="float: right;min-width: 8%;"><a id="signup" href="/signup">注册</a></li>
+            <li id="last" style="float: right;min-width: 8%;">
+              <a id="signup" href="/signup">注册</a>
+              <a id="logout" v-on:click="logout" style="display: none">退出</a>
+            </li>
             <li id="secondLast" style="float: right;min-width: 8%;">
               <a id="login" href="/login">登录</a>
+              <a id="logoff" v-on:click="logoff" style="display: none">注销</a>
             </li>
           </ul>
         </div>
@@ -41,13 +35,13 @@
     inject:['reload'],
     name: 'navi',
     mounted: function () {
-      this.login = store.state.token;
+      let token = localStorage.getItem('Authorization');
 
-      $("#manageAccount").css('display','none');
-      if (false){
-        this.login = store.getters.isLogin;
-        document.getElementById('last').removeChild(document.getElementById('signup'));
-        document.getElementById('secondLast').removeChild(document.getElementById('login'));
+      if (token !== 'null' || token !== ''){
+        $('#login').css("display","none");
+        $('#signup').css("display","none");
+        $('#logout').css("display","inherit");
+        $('#logoff').css("display","inherit");
 
         // $(localStorage.route).css("color","dodgerblue");
         //
@@ -100,7 +94,7 @@
     },
     methods: {
       logout: function () {
-        store.commit(types.LOGOUT);
+        localStorage.removeItem('Authorization');
         this.$router.replace("/login");
         this.reload();
       },
@@ -191,6 +185,7 @@
   }
   #nav li a{
     color: white;
+    cursor: pointer;
   }
   #manageAccount{
     background-color: ghostwhite;
