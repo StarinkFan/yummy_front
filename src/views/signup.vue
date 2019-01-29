@@ -7,7 +7,7 @@
         <input id="nickname" type="text" style="margin-top: 20px;" align="center" placeholder="请输入昵称，长度在2到10个字符之间" v-model="nickname"><br>
         <input id="password" type="password" style="margin-top: 20px;" align="center" placeholder="请输入密码，长度在6到15个字符之间" v-model="password"><br>
         <input id="passwordConfirm" type="password" style="margin-top: 20px;" align="center" placeholder="确认密码" v-model="passwordConfirm"><br>
-        <input id="phone" type="text" style="margin-top: 20px;" placeholder="请输入手机号码">
+        <input id="phone" type="text" style="margin-top: 20px;" placeholder="请输入手机号码" v-model="phone">
         <input id="email" type="text" style="margin-top: 20px" placeholder="请输入邮箱地址" v-model="email">
         <input id="identifyCode" type="text" style="margin-top: 20px;width: 40%" placeholder="请输入验证码" v-model="identifyCode">
         <button id="sendEmail" v-on:click="sendEmail()">获取验证码</button><br>
@@ -23,10 +23,6 @@
 </template>
 
 <script>
-// import { REGISTER } from "@/store/type/actions";
-// import { REGISTER_IDENTIFY } from "@/store/type/actions";
-// import { mapState } from "vuex";
-
 export default {
   name: "signup",
   data() {
@@ -39,12 +35,6 @@ export default {
       phone: ""
     };
   },
-  // computed: {
-  //   ...mapState({
-  //     registerResult: state => state.user.registerResult,
-  //     identifyCodeHasSend: state => state.user.identifyCodeHasSend
-  //   })
-  // },
   mounted: function() {
     let that = this;
     $("#nickname").change(function() {
@@ -86,64 +76,55 @@ export default {
     });
   },
 
-  // methods: {
-  //   register: async function() {
-  //     await this.$store.dispatch(REGISTER, {
-  //       email: this.email,
-  //       nickname: this.nickname,
-  //       password: this.password,
-  //       indentifyCode: this.indentifyCode
-  //     });
-  //     if (this.registerResult === 1) {
-  //       //fail to login
-  //       this.$message({
-  //         message: "验证码错误",
-  //         type: "error"
-  //       });
-  //     } else if (this.registerResult === 2) {
-  //       //fail to login
-  //       this.$message({
-  //         message: "邮箱已注册",
-  //         type: "error"
-  //       });
-  //     } else {
-  //       //success
-  //       this.$message({
-  //         message: "注册成功",
-  //         type: "success"
-  //       });
-  //       this.$router.push({ name: "login" });
-  //     }
-  //   },
-  //
-  //   sendEmail: async function() {
-  //     await this.$store.dispatch(REGISTER_IDENTIFY, {
-  //       user_email: this.email
-  //     });
-  //     console.log("SIGN UP: " + this.identifyCodeHasSend);
-  //     if (this.identifyCodeHasSend === 0) {
-  //       this.$message({
-  //         message: "发送失败，请检查邮箱正确性",
-  //         type: "error"
-  //       });
-  //     } else {
-  //       //success
-  //       $("#sendEmail").attr("disabled", true);
-  //       let time = 60;
-  //       let myScroll = setInterval(() => {
-  //         time--;
-  //         if (time >= 0) {
-  //           $("#sendEmail").html(time + "s后可重发送");
-  //         } else {
-  //           $("#sendEmail").html("发送验证码");
-  //           $("#sendEmail").attr("disabled", false); //倒计时结束能够重新点击发送的按钮
-  //           clearTimeout(myScroll); //清除定时器
-  //           time = 60; //设置循环重新开始条件
-  //         }
-  //       }, 1000);
-  //     }
-  //   }
-  // }
+  methods: {
+    sendEmail(){
+      $('#sendEmail').attr("disabled",true);
+      let time=60;
+      let myScroll = setInterval(() => {
+        time--;
+        if(time>=0) {
+          $('#sendEmail').html(time + "s后重发送");
+        }else{
+          $('#sendEmail').html("发送验证码");
+          $('#sendEmail').attr("disabled",false);   //倒计时结束能够重新点击发送的按钮
+          clearTimeout(myScroll);    //清除定时器
+          time = 60;   //设置循环重新开始条件
+        }
+      }, 1000);
+      this.$axios.post("/user/sendEmail", {"email":this.email}).then(res => {
+        let data=res.data;
+        //console.log(data);
+      });
+    },
+    register(){
+      this.$axios.post("/user/register",
+        {"name":this.nickname, "password": this.password,"phone":this.phone,"email":this.email,"identifyCode":this.identifyCode}
+      ).then(res => {
+        let data=res.data;
+        console.log(data);
+        if(data===1){
+          this.$message({
+            message: "邮箱已被注册",
+            type: "error"
+          });
+        }else if(data===2){
+          this.$message({
+            message: "验证码错误",
+            type: "error"
+          });
+        }else if(data===0){
+          this.$message({
+            message: '注册成功',
+            type: 'success'
+          });
+          this.$router.replace('/login');
+        }
+
+      }).catch(err => {
+        console.log(err)
+      });
+    }
+  }
 };
 </script>
 
@@ -182,21 +163,21 @@ export default {
 input[type="text"] {
   width: 78%;
   margin-left: 11%;
-  height: 28px;
+  height: 32px;
   min-height: 20px;
   border-radius: 5px;
-  font-size: 14px;
-  padding: 7px;
+  font-size: 16px;
+  padding: 6px;
 }
 
 input[type="password"] {
   width: 78%;
   margin-left: 11%;
-  height: 28px;
+  height: 32px;
   min-height: 20px;
   border-radius: 5px;
-  font-size: 14px;
-  padding: 7px;
+  font-size: 16px;
+  padding: 6px;
 }
 
 button {

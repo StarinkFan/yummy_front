@@ -4,7 +4,7 @@
     <div class="mainbox">
       <el-card class="box-card loginbody">
         <h3 style="float: top;" align="center">登录</h3>
-        <el-input id="account" class="loginInput" v-model="account" style="margin-top: 6%;" placeholder="账户/邮箱"></el-input>
+        <el-input id="account" class="loginInput" v-model="email" style="margin-top: 6%;" placeholder="请输入邮箱"></el-input>
         <el-input id="password" type="password" v-model="password" class="loginInput" style="margin-top: 8%;" align="center" placeholder="请输入密码"></el-input><br>
         <el-checkbox id="remember" v-model="remember" style="margin-top: 3%;margin-left: 8%"></el-checkbox>
         <p style="display: inline;">记住密码</p>
@@ -50,14 +50,38 @@
       methods: {
         login: function () {
           let self = this;
-          this.$axios.post('/user/signin', {username: self.account, password: self.password}).then(
+          this.$axios.post('/user/login', {email: self.email, password: self.password}).then(
             res => {
-              store.commit(types.LOGIN, res.data);
-              localStorage.ifUnread=res.data.ifUnread;
-              localStorage.photoSrc=res.data.photoSrc;
-              self.$router.replace({
-                path: '/',
-                query: { redirect: self.$router.currentRoute.path }})
+              console.log(res.data);
+              //store.commit(types.LOGIN, res.data);
+              switch (res.data){
+                case 1:
+                  this.$message({
+                    message: '用户登录成功',
+                    type: 'success'
+                  });
+                  self.$router.replace('/restaurantList');
+                  break;
+                case 2:
+                  this.$message({
+                    message: '餐厅登录成功',
+                    type: 'success'
+                  });
+                  self.$router.replace('/productList');
+                  break;
+                case 3:
+                  this.$message({
+                    message: '经理登录成功',
+                    type: 'success'
+                  });
+                  self.$router.replace('/applicationList');
+                  break;
+                case 0:
+                  this.$message({
+                    message: "用户名或密码错误",
+                    type: "error"
+                  });
+              }
             }).catch(err => {
               console.log(err)
           });
@@ -71,7 +95,7 @@
       },
       data() {
         return {
-          account: "",
+          email: "",
           password: "",
           remember: false
         }

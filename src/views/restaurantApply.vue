@@ -36,11 +36,18 @@
       </el-select>
 
       <div class="photoPart">
-        <input type="file" class="photoChoose" id="photoChoose" accept="image/png,image/jpg,image/gif,image/JPEG" style="display: none;" @change="uploadPhoto()"/>
+        <input type="file" class="photoChoose" id="photoChoose" accept="image/png,image/jpg,image/gif,image/JPEG" style="display: none;" @change="previewPhoto"/>
         <label for="photoChoose">
           <img id="photo" :src="photoSrc">
         </label>
         <p>点击上传头像</p>
+      </div>
+      <div class="certificatePart">
+        <input type="file" class="certificateChoose" id="certificateChoose" accept="image/png,image/jpg,image/gif,image/JPEG" style="display: none;" @change="previewCertificate"/>
+        <label for="certificateChoose">
+          <img id="certificate" :src="certificateSrc">
+        </label>
+        <p>点击上传营业资格证</p>
       </div>
 
     </div>
@@ -78,7 +85,8 @@
           newAddress: "",
           list: [],
           loading: false,
-          photoSrc: '/static/pic/defaultPhoto.jpg'
+          photoSrc: '/static/pic/defaultPhoto.jpg',
+          certificateSrc: '/static/pic/defaultLackPic.png'
         }
       },
       methods:{
@@ -97,70 +105,25 @@
           }
         },
 
-        getObjectURL(file) {
-          let url = null;
-          if(window.createObjectURL != undefined) { // basic
-            url = window.createObjectURL(file);
-          } else if(window.URL != undefined) { // mozilla(firefox)
-            url = window.URL.createObjectURL(file);
-          } else if(window.webkitURL != undefined) { // webkit or chrome
-            url = window.webkitURL.createObjectURL(file);
-          }
-          return url;
-        },
-        submitPicture(url,data) {
-          document.getElementById('photo').disable = true;
-          //warming.style.display='block';
-          if (url && data) {
-            $.ajax({
-              type: "post",
-              url: url,
-              async: true,
-              data: data,
-              //下面这两个要写成false，要不然上传不了。
-              processData: false,
-              contentType: false,
-              success: function (dat) {
-                // photoSrc=dat.photoSrc;
-                // alert("上传成功");
-                // //warming.style.display='none';
-              },
-              error: function () {
-                // alert("上传失败");
-                // document.getElementById("photo").style.backgroundImage="url('"+photoSrc+"')";
-
-              }
-
-            });
-          } else {
-            alert('数据格式不正确!');
+        previewPhoto(e){
+          let _this = this;
+          let files = e.target.files[0];
+          if (!e || !window.FileReader) return;  // 看支持不支持FileReader
+          let reader = new FileReader();
+          reader.readAsDataURL(files); // 这里是最关键的一步，转换就在这里
+          reader.onloadend = function () {
+            _this.photoSrc = this.result
           }
         },
-        uploadPhoto(){
-          //获取type=file的input
-          let fileImg = $("#photoChoose")[0];
-          //得到所有的图片列表
-          let fileList = fileImg.files;
-          let imgSrcI = this.getObjectURL(fileList[0]);
-
-          //向文件名的数组末尾添加此文件名
-          let imgName=fileList[0].name;
-          //向路径的数组末尾添加路径
-          let imgSrc=imgSrcI;
-          //在文件流数组的末尾添加文件
-          let imgFile=fileList[0];
-          //将图片展示出去
-          this.photoSrc=require("url("+imgSrc+")");
-          console.log(this.photoSrc);
-
-          let fd = new FormData();
-          //由于fd对象中已经包含<input type='file'>的input标签，如果不删除，就会造成重复上传
-          //将文件流循环添加到FormData对象中
-          fd.append("file",imgFile);
-          //上传所有的图片
-          this.submitPicture('/editPersonalInformation/uploadPhoto', fd);
-          // let nf = obj.cloneNode(true);
-          // obj.parentNode.replaceChild(nf, obj);
+        previewCertificate(e){
+          let _this = this;
+          let files = e.target.files[0];
+          if (!e || !window.FileReader) return;  // 看支持不支持FileReader
+          let reader = new FileReader();
+          reader.readAsDataURL(files); // 这里是最关键的一步，转换就在这里
+          reader.onloadend = function () {
+            _this.certificateSrc = this.result
+          }
         }
       }
     }
@@ -181,6 +144,17 @@
   #photo{
     width: 120px;
     height: 120px;
+    cursor: pointer;
+  }
+
+  .certificatePart{
+    margin-top: 50px;
+    margin-right: 50px;
+  }
+
+  #certificate{
+    width: 400px;
+    height: 250px;
     cursor: pointer;
   }
 </style>

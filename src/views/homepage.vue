@@ -33,7 +33,7 @@
             if(store.getters.isLogin){
               this.$router.push('/restaurantList');
             }else{
-              this.$router.push('/signup')
+              this.$router.push('/login')
             }
           }
       }
