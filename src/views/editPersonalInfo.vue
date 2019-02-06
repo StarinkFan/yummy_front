@@ -29,30 +29,17 @@
         </el-table-column>
       </el-table>
       <p style="font-size: 14px;margin-left: 10px;margin-top: 10px">新增地址:</p>
-      <el-select
-        v-model="newAddress"
-        filterable
-        remote
-        reserve-keyword
-        suffix-icon="el-icon-search"
-        placeholder="请输入地址"
-        :remote-method="remoteMethod"
-        :loading="loading"
-        @change="addressSelected"
-      style="min-width: 600px">
-        <el-option
-          v-for="item in options"
-          :key="item.name"
-          :value="item.name">
-        </el-option>
-      </el-select>
+      <location-selector></location-selector>
     </div>
   </div>
 </template>
 
 <script>
+  import locationSelector from '@/components/locationSelector.vue'
+
     export default {
         name: "editPersonalInfo",
+      components:{locationSelector},
       data(){
         return{
           info:{
@@ -67,10 +54,6 @@
               {location:'江苏省南京市栖霞区仙林大道163号，南京大学学生宿舍1栋'}
             ]
           },
-          options: [],
-          newAddress: "",
-          list: [],
-          loading: false,
         }
       },
       mounted() {
@@ -101,26 +84,30 @@
           });
         },
         deleteRow(row) {
-          this.info.addresses.splice(row,1);
+          console.log(row);
+          let index=this.find(row.location);
+          console.log(index);
+          this.info.addresses.splice(index,1);
         },
-
-        remoteMethod(query) {
-          if (query !== '') {
-            this.loading = true;
-            this.$axios.post('/address/getSimilarLocation', {keyword: query}).then(
-              res => {
-                this.options = res.data.list;
-                this.loading = false;
-              }).catch(err => {
-                this.loading = false
-              });
-          } else {
-            // this.options = [];
+        addressSelected(location, region) {
+          if(this.find(location)>=0){
+            this.$message({
+              message: "请勿重复添加",
+              type: "error"
+            });
+          }else{
+            this.info.addresses.push({tid:0,uid: parseInt(localStorage.uid),location:location, region: region});
           }
+
         },
-        addressSelected(value) {
-          this.info.addresses.push({tid:0,uid: parseInt(localStorage.uid),location:value});
-        }
+        find(value){
+          for(let i=0;i<this.info.addresses.length;i++){
+            if(this.info.addresses[i].location===value){
+              return i;
+            }
+          }
+          return -1;
+        },
 
       }
 

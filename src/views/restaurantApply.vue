@@ -18,22 +18,7 @@
         </el-select>
       </p><br>
       <p>地址：</p>
-      <el-select
-        v-model="newAddress"
-        filterable
-        remote
-        reserve-keyword
-        suffix-icon="el-icon-search"
-        placeholder="请输入地址"
-        :remote-method="remoteMethod"
-        :loading="loading"
-        style="min-width: 600px">
-        <el-option
-          v-for="item in options"
-          :key="item.name"
-          :value="item.name">
-        </el-option>
-      </el-select>
+      <location-selector></location-selector>
 
       <div class="photoPart">
         <input type="file" class="photoChoose" id="photoChoose" accept="image/png,image/jpg,image/gif,image/JPEG" style="display: none;" @change="previewPhoto"/>
@@ -55,8 +40,10 @@
 </template>
 
 <script>
+    import LocationSelector from "../components/locationSelector";
     export default {
       name: "restaurantApply",
+      components: {LocationSelector},
       data(){
         return{
           kindOptions: [{
@@ -81,28 +68,17 @@
           kind: '',
           name: '',
           password:'',
-          options: [],
-          newAddress: "",
-          list: [],
-          loading: false,
           photoSrc: '/static/pic/defaultPhoto.jpg',
-          certificateSrc: '/static/pic/defaultLackPic.png'
+          certificateSrc: '/static/pic/defaultLackPic.png',
+          location: "",
+          region: "全国"
         }
       },
       methods:{
-        remoteMethod(query) {
-          if (query !== '') {
-            this.loading = true;
-            this.$axios.post('/personalCenter/getInfo', {keyword: query}).then(
-              res => {
-                this.options = res.data.list;
-                this.loading = false;
-              }).catch(err => {
-              this.loading = false
-            });
-          } else {
-            // this.options = [];
-          }
+        addressSelected(location, region) {
+          this.location=location;
+          this.region=region;
+
         },
 
         previewPhoto(e){
