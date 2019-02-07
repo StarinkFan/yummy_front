@@ -14,13 +14,13 @@
       <el-table-column
         fixed
         label="名称"
-        prop="title">
+        prop="name">
       </el-table-column>
       <el-table-column
         fixed
         label="类型"
         width="160"
-        prop="type">
+        prop="kind">
       </el-table-column>
       <el-table-column
         fixed
@@ -33,7 +33,7 @@
         label="操作"
         width="100">
         <template slot-scope="scope">
-          <el-button @click="checkApply(scope.row)" type="text" size="small">查看</el-button>
+          <el-button @click="checkApplication(scope.row)" type="text" size="small">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -53,10 +53,41 @@
       mounted() {
         this.$axios.get('/restaurant/getApplications').then(
           res => {
-            this.applications=res.data;
+            let data=res.data;
+            for(let item of data){
+              switch(item.kind){
+                case 1:
+                  item.kind="中餐";
+                  break;
+                case 2:
+                  item.kind="西餐";
+                  break;
+                case 3:
+                  item.kind="快餐";
+                  break;
+                case 4:
+                  item.kind="甜品";
+                  break;
+                case 5:
+                  item.kind="小吃";
+                  break;
+                case 6:
+                  item.kind="其他";
+                  break;
+              }
+            }
+            this.applications=data;
+
           }).catch(err => {
           console.log(err)
         });
+      },
+      methods:{
+          checkApplication(row){
+            localStorage.applicationId=row.rid;
+            console.log(row.rid);
+            this.$router.replace("/manager/applicationDetail");
+          }
       }
     }
 </script>

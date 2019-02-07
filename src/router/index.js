@@ -80,6 +80,11 @@ const router = new Router({
           name: "applyAdmin",
           path: "applyAdmin",
           component: () => import("@/views/applyAdmin")
+        },
+        {
+          name: "applicationDetail",
+          path: "applicationDetail",
+          component: () => import("@/views/applicationDetail")
         }
       ]
     }
