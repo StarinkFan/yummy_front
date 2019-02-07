@@ -4,9 +4,7 @@
             <navi></navi>
         </div>
         <router-view></router-view>
-        <div id="foot">
-            <foot></foot>
-        </div>
+      <foot id="foot"></foot>
         <div id="rightBar">
             <rightBar></rightBar>
         </div>
@@ -20,6 +18,11 @@ import rightBar from "@/components/rightBar.vue";
 export default {
   name: "userLayout",
   components: { navi, foot, rightBar },
+  data() {
+    return {
+      minHeight: 0
+    };
+  },
   mounted() {
     this.minHeight = window.screen.availHeight;
     console.log(this.minHeight);

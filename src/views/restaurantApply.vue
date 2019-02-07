@@ -69,8 +69,26 @@
           console.log(data);
           if(data===1){
             this.$router.replace('/user/personalCenter/restaurantApply/waitExamine');
-          }else if(data===2){
+          }else if(data===3){
             this.$router.replace('/user/personalCenter/restaurantApply/applySuccess');
+          }else if(data===2){
+            this.$message({
+              message: "审核未通过，请重新填写",
+              type: "warning"
+            });
+            this.$axios.post('/restaurant/getInfo', {uid: localStorage.uid}).then(
+              res => {
+                let data=res.data;
+                this.kind=data.kind;
+                this.name=data.name;
+                this.password=data.password;
+                this.photoSrc=data.photoSrc;
+                this.certificateSrc=data.certificateSrc;
+                this.location=data.location;
+                this.region=data.region;
+              }).catch(err => {
+              console.log(err)
+            });
           }
 
         }).catch(err => {

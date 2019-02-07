@@ -82,7 +82,7 @@
                     type: 'success'
                   });
                   console.log(localStorage.Authorization);
-                  self.$router.replace('/manager/applicationList');
+                  self.$router.replace('/manager/applyAdmin');
                   break;
                 case 0:
                   this.$message({

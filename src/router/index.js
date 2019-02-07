@@ -76,7 +76,11 @@ const router = new Router({
       name: 'manager',
       component: () => import("@/layout/managerLayout"),
       children: [
-
+        {
+          name: "applyAdmin",
+          path: "applyAdmin",
+          component: () => import("@/views/applyAdmin")
+        }
       ]
     }
 

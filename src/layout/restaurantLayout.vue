@@ -4,9 +4,7 @@
       <navi2></navi2>
     </div>
     <router-view></router-view>
-    <div id="foot">
-      <foot></foot>
-    </div>
+    <foot id="foot"></foot>
     <div id="rightBar">
       <rightBar></rightBar>
     </div>
@@ -20,6 +18,11 @@
     export default {
         name: "restaurantLayout",
       components: { navi2, foot, rightBar },
+      data() {
+        return {
+          minHeight: 0
+        };
+      },
       mounted() {
         this.minHeight = window.screen.availHeight;
         console.log(this.minHeight);

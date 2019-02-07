@@ -1,5 +1,5 @@
 <template>
-    <div class="footer">
+    <div class="foot">
         @2019 by <p style="color: white;display: inline-block">Nanjing University Software Engineering</p>   yummy119@163.com
     </div>
 </template>
@@ -11,7 +11,7 @@ export default {
 </script>
 
 <style scoped>
-.footer {
+.foot {
   width: 100%;
   background-color: #1a1818;
   bottom: 0;
