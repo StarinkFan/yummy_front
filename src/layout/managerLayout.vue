@@ -19,7 +19,17 @@
   import rightBar from "@/components/rightBar.vue";
   export default {
     name: "managerLayout",
-    components: { navi3, foot, rightBar }
+    components: { navi3, foot, rightBar },
+    mounted() {
+      this.minHeight = window.screen.availHeight;
+      console.log(this.minHeight);
+      console.log(document.body.scrollHeight);
+      if (document.body.scrollHeight <= this.minHeight) {
+        $("#foot").css("position", "absolute");
+      } else {
+        $("#foot").css("position", "inherit");
+      }
+    }
   }
 </script>
 
