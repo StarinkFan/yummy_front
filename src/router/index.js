@@ -62,6 +62,22 @@ const router = new Router({
           ]
         },
       ]
+    },
+    {
+      path: '/restaurant',
+      name: 'restaurant',
+      component: () => import("@/layout/restaurantLayout"),
+      children: [
+
+      ]
+    },
+    {
+      path: '/manager',
+      name: 'manager',
+      component: () => import("@/layout/managerLayout"),
+      children: [
+
+      ]
     }
 
   ],
