@@ -113,9 +113,10 @@
             {"uid":localStorage.uid}
           ).then(res => {
             let data=res.data;
-            if(data===1){
+            if(data){
               console.log("logout success")
             }
+            this.$router.replace("/login");
 
           }).catch(err => {
             console.log(err)

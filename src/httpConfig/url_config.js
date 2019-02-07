@@ -30,7 +30,7 @@ axios.interceptors.request.use(
     //   config.headers.token = cookie.get("token");
     //   config.headers.name= cookie.get("name");
 
-    if (localStorage.token) {
+    if (localStorage.Authorization) {
       config.headers.Authorization = 'Bearer ' + localStorage.token
     }
     return config;

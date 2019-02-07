@@ -19,21 +19,7 @@
       </p><br>
       <p>地址：</p>
       <location-selector></location-selector>
-
-      <div class="photoPart">
-        <input type="file" class="photoChoose" id="photoChoose" accept="image/png,image/jpg,image/gif,image/JPEG" style="display: none;" @change="previewPhoto"/>
-        <label for="photoChoose">
-          <img id="photo" :src="photoSrc">
-        </label>
-        <p>点击上传头像</p>
-      </div>
-      <div class="certificatePart">
-        <input type="file" class="certificateChoose" id="certificateChoose" accept="image/png,image/jpg,image/gif,image/JPEG" style="display: none;" @change="previewCertificate"/>
-        <label for="certificateChoose">
-          <img id="certificate" :src="certificateSrc">
-        </label>
-        <p>点击上传营业资格证</p>
-      </div>
+      <pics-uploader ref="pics"></pics-uploader>
 
     </div>
   </div>
@@ -41,9 +27,10 @@
 
 <script>
     import LocationSelector from "../components/locationSelector";
+    import picsUploader from "../components/picsUploader"
     export default {
       name: "restaurantApply",
-      components: {LocationSelector},
+      components: {LocationSelector, picsUploader},
       data(){
         return{
           kindOptions: [{
@@ -109,6 +96,9 @@
             });
             return;
           }
+          this.photoSrc=this.$refs.pics.photoSrc;
+          this.certificateSrc=this.$refs.pics.certificateSrc;
+
           this.$axios.post("/restaurant/apply",
             {"name":this.name, "password": this.password,"kind":this.kind,"location":this.location,"region":this.region, "photo": this.photoSrc, "certificate": this.certificateSrc,"owner":localStorage.uid}
           ).then(res => {
@@ -131,27 +121,6 @@
             console.log(err)
           });
         },
-
-        previewPhoto(e){
-          let _this = this;
-          let files = e.target.files[0];
-          if (!e || !window.FileReader) return;  // 看支持不支持FileReader
-          let reader = new FileReader();
-          reader.readAsDataURL(files); // 这里是最关键的一步，转换就在这里
-          reader.onloadend = function () {
-            _this.photoSrc = this.result
-          }
-        },
-        previewCertificate(e){
-          let _this = this;
-          let files = e.target.files[0];
-          if (!e || !window.FileReader) return;  // 看支持不支持FileReader
-          let reader = new FileReader();
-          reader.readAsDataURL(files); // 这里是最关键的一步，转换就在这里
-          reader.onloadend = function () {
-            _this.certificateSrc = this.result
-          }
-        }
       }
     }
 </script>
@@ -162,26 +131,4 @@
     display: inline-block;
   }
 
-  .photoPart{
-    position: absolute;
-    right: 15%;
-    top: 120px;
-  }
-
-  #photo{
-    width: 120px;
-    height: 120px;
-    cursor: pointer;
-  }
-
-  .certificatePart{
-    margin-top: 50px;
-    margin-right: 50px;
-  }
-
-  #certificate{
-    width: 400px;
-    height: 250px;
-    cursor: pointer;
-  }
 </style>
