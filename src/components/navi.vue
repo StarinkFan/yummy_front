@@ -6,9 +6,9 @@
       <div class="container-fluid" style="width: 100%">
         <div class="collapse navbar-collapse" id="myNavbar" style="display: inline-block;font-size: 16px;width: 100%">
           <ul class="nav navbar-nav" id="nav" style="width: 100%">
-            <li><a id="invest" href="/restaurantList">点餐大厅</a></li>
-            <li><a id="loan" href="/personalOrderList">我的订单</a></li>
-            <li><a id="trade" href="/personalCenter">个人中心</a></li>
+            <li><a id="invest" href="/user/restaurantList">点餐大厅</a></li>
+            <li><a id="loan" href="/user/personalOrderList">我的订单</a></li>
+            <li><a id="trade" href="/user/personalCenter">个人中心</a></li>
             <li><a id="guide" href="/guide">平台指南</a></li>
             <li id="last" style="float: right;min-width: 8%;">
               <a id="signup" href="/signup">注册</a>
@@ -107,6 +107,18 @@
           this.$message({
             type: 'success',
             message: '注销成功!'
+          });
+          localStorage.removeItem('Authorization');
+          this.$axios.post("/user/logoff",
+            {"uid":localStorage.uid}
+          ).then(res => {
+            let data=res.data;
+            if(data===1){
+              console.log("logout success")
+            }
+
+          }).catch(err => {
+            console.log(err)
           });
         }).catch(() => {
           this.$message({

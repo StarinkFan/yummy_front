@@ -74,11 +74,62 @@
           region: "全国"
         }
       },
+      beforeCreate(){
+        this.$axios.post("/restaurant/getState",
+          {"owner":localStorage.uid}
+        ).then(res => {
+          let data=res.data;
+          console.log(data);
+          if(data===1){
+            this.$router.replace('/user/personalCenter/restaurantApply/waitExamine');
+          }else if(data===2){
+            this.$router.replace('/user/personalCenter/restaurantApply/applySuccess');
+          }
+
+        }).catch(err => {
+          console.log(err)
+        });
+      },
       methods:{
         addressSelected(location, region) {
           this.location=location;
           this.region=region;
+        },
+        applyForRestaurant(){
+          if(this.name.length<2||this.name.length>15){
+            this.$message({
+              message: "名称长度不符",
+              type: "error"
+            });
+            return;
+          }else if(this.password.length<6||this.password.length>15){
+            this.$message({
+              message: "密码长度不符",
+              type: "error"
+            });
+            return;
+          }
+          this.$axios.post("/restaurant/apply",
+            {"name":this.name, "password": this.password,"kind":this.kind,"location":this.location,"region":this.region, "photo": this.photoSrc, "certificate": this.certificateSrc,"owner":localStorage.uid}
+          ).then(res => {
+            let data=res.data;
+            console.log(data);
+            if(data===false){
+              this.$message({
+                message: "申请失败",
+                type: "error"
+              });
+            }else if(data===true){
+              this.$message({
+                message: '申请成功，等待审核',
+                type: 'success'
+              });
+              this.$router.replace('/user/personalCenter/restaurantApply/waitExamine');
+            }
 
+          }).catch(err => {
+            console.log(err)
+          });
         },
 
         previewPhoto(e){
