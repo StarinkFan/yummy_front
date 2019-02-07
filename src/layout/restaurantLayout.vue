@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="{minHeight: minHeight+'px'}" style="position: relative">
     <div id="navi">
       <navi2></navi2>
     </div>
