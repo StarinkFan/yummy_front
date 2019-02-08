@@ -18,7 +18,7 @@
         </el-select>
       </p><br>
       <p>地址：</p>
-      <location-selector></location-selector>
+      <location-selector ref="loc"></location-selector>
       <pics-uploader ref="pics"></pics-uploader>
 
     </div>
@@ -52,9 +52,14 @@
             value: '其他',
             label: '其他'
           }],
+          rid: 0,
           kind: '',
           name: '',
           password:'',
+          photoSrc: '',
+          certificateSrc: '',
+          location: '',
+          region: ''
         }
       },
       beforeCreate(){
@@ -75,10 +80,14 @@
             this.$axios.post('/restaurant/getInfo', {owner: localStorage.uid}).then(
               res => {
                 let data=res.data;
+                this.rid=data.rid;
                 this.name=data.name;
                 this.password=data.password;
                 this.$refs.pics.photoSrc=data.photoSrc;
                 this.$refs.pics.certificateSrc=data.certificateSrc;
+                this.$refs.loc.newAddress=data.location;
+                this.location=data.location;
+                this.region=data.region;
                 console.log(this.photoSrc);
                 switch(data.kind){
                   case 1:
@@ -127,12 +136,18 @@
               type: "error"
             });
             return;
+          }else if(this.location===""){
+            this.$message({
+              message: "地址不得为空",
+              type: "error"
+            });
+            return;
           }
           this.photoSrc=this.$refs.pics.photoSrc;
           this.certificateSrc=this.$refs.pics.certificateSrc;
 
           this.$axios.post("/restaurant/apply",
-            {"name":this.name, "password": this.password,"kind":this.kind,"location":this.location,"region":this.region, "photo": this.photoSrc, "certificate": this.certificateSrc,"owner":localStorage.uid}
+            {"rid": this.rid, "name":this.name, "password": this.password,"kind":this.kind,"location":this.location,"region":this.region, "photo": this.photoSrc, "certificate": this.certificateSrc,"owner":localStorage.uid, "IdCode": this.idCode}
           ).then(res => {
             let data=res.data;
             console.log(data);

@@ -78,6 +78,7 @@
         handleAreaSelect(value) {
           //console.log(value);
           this.disabled=false;
+          this.newAddress="";
         }
       }
     }
