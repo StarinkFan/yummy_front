@@ -68,7 +68,18 @@ const router = new Router({
       name: 'restaurant',
       component: () => import("@/layout/restaurantLayout"),
       children: [
-
+        {
+          path: "restaurantCenter",
+          name: 'restaurantCenter',
+          component: () => import("@/layout/restaurantCenterLayout"),
+          children: [
+            {
+              name: "restaurantInfo",
+              path: "",
+              component: () => import("@/views/restaurantInfo")
+            },
+          ]
+        },
       ]
     },
     {

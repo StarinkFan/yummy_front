@@ -33,7 +33,7 @@
         }
       },
       mounted() {
-        this.$axios.post('/restaurant/getApplicationDetail', {applicationId: localStorage.applicationId}).then(
+        this.$axios.post('/restaurant/getRestaurantDetail', {rid: localStorage.applicationId}).then(
           res => {
             this.info=res.data;
             switch(this.info.kind){

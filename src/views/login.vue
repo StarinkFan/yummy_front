@@ -72,7 +72,7 @@
                     message: '餐厅登录成功',
                     type: 'success'
                   });
-                  localStorage.uid=res.data.rid;
+                  localStorage.rid=res.data.rid;
                   self.$router.replace('/restaurant/productList');
                   break;
                 case 3:

@@ -8,7 +8,7 @@
           <ul class="nav navbar-nav" id="nav" style="width: 100%">
             <li><a href="/restaurant/productAdmin">商品管理</a></li>
             <li><a href="/restaurant/restaurantOrderList">经营记录</a></li>
-            <li><a href="/restaurant/restaurantCenter">餐厅信息</a></li>
+            <li><a href="/restaurant/restaurantCenter">餐厅中心</a></li>
             <li><a href="/guide">平台指南</a></li>
             <li id="last" style="float: right;min-width: 8%;">
               <a id="logout" v-on:click="logout">退出</a>

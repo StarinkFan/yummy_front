@@ -1,6 +1,6 @@
 <template>
     <div id="main" style="width: 100%">
-      <leftNavi></leftNavi>
+      <leftNavi2></leftNavi2>
       <el-card class="box-card mainBody">
         <router-view></router-view>
       </el-card>
@@ -8,11 +8,11 @@
 </template>
 
 <script>
-  import leftNavi from '@/components/leftNavi.vue';
+  import leftNavi2 from '@/components/leftNavi2.vue';
 
     export default {
-        name: "personalLayout",
-      components:{leftNavi}
+        name: "restaurantCenterLayout",
+      components: {leftNavi2}
     }
 </script>
 
@@ -28,5 +28,4 @@
     margin-bottom: 60px;
     position: relative;
   }
-
 </style>
