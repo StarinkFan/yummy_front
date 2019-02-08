@@ -4,7 +4,8 @@
       <h4>餐厅申请</h4>
     </div>
     <div style="padding-left: 2%;margin-top: 20px;">
-      <el-tag type="success" style="font-size: 16px">您已成功开通餐厅！餐厅编号为{{code}}，初始密码同编号</el-tag>
+      <el-tag type="success" style="font-size: 16px">您已成功开通餐厅！餐厅识别码为{{code}}</el-tag><br>
+      <a href="/login"><el-button type="success" plain style="margin-top: 30px">前往登录</el-button></a>
     </div>
   </div>
 </template>
@@ -16,6 +17,14 @@
         return {
           code: '1000001'
         }
+      },
+      mounted(){
+        this.$axios.post('/restaurant/getIdCode', {owner: localStorage.uid}).then(
+          res => {
+            this.code=res.data;
+          }).catch(err => {
+          console.log(err)
+        });
       }
     }
 </script>

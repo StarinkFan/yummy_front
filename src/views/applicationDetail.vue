@@ -12,8 +12,8 @@
       <p>营业资格证</p>
     </div>
     <div style="width: 100%; text-align: center">
-      <el-button type="primary" plain style="margin-top: 20px;margin-right: 50px">通  过</el-button>
-      <el-button type="primary" plain>否  决</el-button>
+      <el-button type="primary" plain style="margin-top: 20px;margin-right: 50px" @click="passApplication">通  过</el-button>
+      <el-button type="primary" plain @click="vetoApplication">否  决</el-button>
     </div>
   </el-card>
 </template>
@@ -59,7 +59,38 @@
           }).catch(err => {
           console.log(err)
         });
+      },
+      methods:{
+        passApplication(){
+          this.$axios.post('/restaurant/pass', {applicationId: localStorage.applicationId}).then(
+            res => {
+              if(res.data===true){
+                this.$message({
+                  message: '通过成功',
+                  type: 'success'
+                });
+              }
+              this.$router.replace("/manager/applyAdmin");
+            }).catch(err => {
+            console.log(err)
+          });
+        },
+        vetoApplication(){
+          this.$axios.post('/restaurant/veto', {applicationId: localStorage.applicationId}).then(
+            res => {
+              if(res.data===true){
+                this.$message({
+                  message: '否决成功',
+                  type: 'success'
+                });
+              }
+              this.$router.replace("/manager/applyAdmin");
+            }).catch(err => {
+            console.log(err)
+          });
+        }
       }
+
     }
 </script>
 
