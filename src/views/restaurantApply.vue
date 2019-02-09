@@ -147,7 +147,7 @@
           this.certificateSrc=this.$refs.pics.certificateSrc;
 
           this.$axios.post("/restaurant/apply",
-            {"rid": this.rid, "name":this.name, "password": this.password,"kind":this.kind,"location":this.location,"region":this.region, "photo": this.photoSrc, "certificate": this.certificateSrc,"owner":localStorage.uid, "IdCode": this.idCode}
+            {"rid": this.rid, "name":this.name, "password": this.password,"kind":this.kind,"location":this.location,"region":this.region, "photo": this.photoSrc, "certificate": this.certificateSrc,"owner":localStorage.uid}
           ).then(res => {
             let data=res.data;
             console.log(data);

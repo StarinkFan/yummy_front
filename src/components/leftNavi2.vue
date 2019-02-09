@@ -6,7 +6,7 @@
         <i class="el-icon-info"></i>
         <span slot="title">餐厅信息</span>
       </el-menu-item></a>
-      <a href="/user/restaurantCenter/restaurantFinance"><el-menu-item index="2">
+      <a href="/restaurant/restaurantCenter/restaurantFinance"><el-menu-item index="2">
         <i class="el-icon-document"></i>
         <span slot="title">财务整理</span>
       </el-menu-item></a>
