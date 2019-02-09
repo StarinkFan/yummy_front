@@ -52,7 +52,7 @@
             value: '其他',
             label: '其他'
           }],
-          rid: 0,
+          rid: -1,
           kind: '',
           name: '',
           password:'',

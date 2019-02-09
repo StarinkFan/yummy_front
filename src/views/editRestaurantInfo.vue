@@ -4,7 +4,7 @@
       <h4>申请修改</h4>
       <el-button style="float: right; padding: 3px 0" type="text" @click="applyForModification()" :disabled="disabled">申请</el-button>
     </div>
-    <div style="padding-left: 5%;font-size: 16px;margin-top: 50px" id="mainPart">
+    <div style="padding-left: 5%;font-size: 16px;margin-top: 50px" id="mainPart" v-if="canModify">
       <p>名称：<el-input v-model="name" placeholder="餐厅名长度2-15" style="width: 180px"></el-input></p><br>
       <p>密码：<el-input v-model="password" type="password" placeholder="请输入密码,长度6-15" style="width: 180px"></el-input></p><br>
       <p>类型：
@@ -60,22 +60,24 @@
         certificateSrc: '',
         location: '',
         region: '',
-        disabled: ''
+        disabled: false,
+        canModify: true
       }
     },
     beforeCreate(){
-      this.$axios.post("/modification/getState",
+      this.$axios.post("/modification/hasModification",
         {"rid":localStorage.rid}
       ).then(res => {
         let data=res.data;
         console.log(data);
         if(data===true) {
           this.disabled = true;
-        }else if(data===false){
+          this.canModify=false;
           this.$message({
             message: "修改审核中，不可重复提交",
             type: "warning"
           });
+        }else if(data===false){
           this.$axios.post('/restaurant/getRestaurantDetail', {rid: localStorage.rid}).then(
             res => {
               let data=res.data;
@@ -160,7 +162,7 @@
               message: '申请成功，等待审核',
               type: 'success'
             });
-            this.$router.replace('/restaurant/restaurantCenter/restaurantInfo');
+            this.$router.replace('/restaurant/restaurantCenter');
           }
         }).catch(err => {
           console.log(err)
