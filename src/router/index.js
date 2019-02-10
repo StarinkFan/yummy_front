@@ -101,7 +101,17 @@ const router = new Router({
           name: "applicationDetail",
           path: "applicationDetail",
           component: () => import("@/views/applicationDetail")
-        }
+        },
+        {
+          name: "modifyAdmin",
+          path: "modifyAdmin",
+          component: () => import("@/views/modifyAdmin")
+        },
+        {
+          name: "modificationDetail",
+          path: "modificationDetail",
+          component: () => import("@/views/modificationDetail")
+        },
       ]
     }
 

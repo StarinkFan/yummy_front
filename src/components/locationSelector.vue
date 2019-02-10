@@ -67,8 +67,9 @@
           let region="全国";
           for(let i=0;i<this.selectedArea.length;i++){
             location=location+this.selectedArea[i];
-            if (length===i+2){
+            if (this.selectedArea.length===i+2){
               region=this.selectedArea[i];
+              console.log(region);
             }
           }
           location=location+value;
