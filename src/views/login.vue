@@ -73,7 +73,7 @@
                     type: 'success'
                   });
                   localStorage.rid=res.data.rid;
-                  self.$router.replace('/restaurant/productList');
+                  self.$router.replace('/restaurant/commodityAdmin');
                   break;
                 case 3:
                   this.setAuthorization("manager");

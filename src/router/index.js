@@ -85,6 +85,11 @@ const router = new Router({
             },
           ]
         },
+        {
+          name: "commodityAdmin",
+          path: "commodityAdmin",
+          component: () => import("@/views/commodityAdmin")
+        },
       ]
     },
     {
