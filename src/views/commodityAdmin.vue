@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%;text-align: center">
-    <h1 style="color: lightskyblue">单品管理</h1>
+    <h1 style="color: lightskyblue; margin-top: 50px">单品管理</h1>
     <el-card class="box-card" style="width: 56%; vertical-align: top;display: inline-block; min-height: 500px; margin-top: 30px;margin-bottom: 30px">
       <el-table
         :data="commodities"
@@ -134,7 +134,7 @@
               return;
             }
             this.price=Number(this.price).toFixed(2);
-            this.$axios.post('/commodity/saveCommodity',{"rid": parseInt(localStorage.rid), "cid":-1, "name": this.name, "price": this.price, "amount": this.amount, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0}).then(
+            this.$axios.post('/commodity/saveCommodity',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "amount": this.amount, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0}).then(
               res => {
                 if(res.data>0){
                   this.$message({
@@ -142,7 +142,12 @@
                     type: 'success'
                   });
                   this.commodities.push({"rid": parseInt(localStorage.rid), "cid":res.data, "name": this.name, "price": this.price, "amount": this.amount, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0, "disabled": Date.now()>=Date.parse(this.beginDate)});
-                }else {
+                }else if(res.data===-2){
+                  this.$message({
+                    message: '同期有重名商品，添加失败',
+                    type: 'error'
+                  });
+                }else{
                   this.$message({
                     message: '添加失败',
                     type: 'error'

@@ -90,6 +90,11 @@ const router = new Router({
           path: "commodityAdmin",
           component: () => import("@/views/commodityAdmin")
         },
+        {
+          name: "packageAdmin",
+          path: "packageAdmin",
+          component: () => import("@/views/packageAdmin")
+        },
       ]
     },
     {
