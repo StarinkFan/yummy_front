@@ -63,6 +63,7 @@
         type="date"
         value-format="yyyy-MM-dd"
         placeholder="选择起始日期"
+        :picker-options="pickerOptions0"
         style="margin-top: 20px">
       </el-date-picker>
       <el-date-picker
@@ -70,6 +71,7 @@
         type="date"
         value-format="yyyy-MM-dd"
         placeholder="选择结束日期"
+        :picker-options="pickerOptions1"
         style="margin-top: 20px">
       </el-date-picker>
       <el-button round style="margin-top: 30px" @click="addCommodity">添加单品</el-button>
@@ -81,6 +83,7 @@
     export default {
         name: "commodityAdmin",
       data(){
+          let that=this;
         return{
           name:"",
           price:"",
@@ -89,7 +92,23 @@
           endDate:"",
           commodities: [
 
-          ]
+          ],
+
+          pickerOptions0: {
+            disabledDate(time) {
+              if (that.endDate !== "") {
+                return time.getTime() <= Date.now() || time.getTime() >= Date.parse(that.endDate);
+              } else {
+                return time.getTime() <= Date.now();
+              }
+
+            }
+          },
+          pickerOptions1: {
+            disabledDate: (time) => {
+              return time.getTime() <= Date.parse(that.beginDate) || time.getTime() <= Date.now();
+            }
+          },
         }
       },
       mounted() {
@@ -107,6 +126,13 @@
       },
       methods:{
           addCommodity(){
+            if(this.name===''||this.price===''||this.amount===''||this.beginDate===''||this.endDate===''){
+              this.$message({
+                message: '请将信息填写完整',
+                type: 'error'
+              });
+              return;
+            }
             this.price=Number(this.price).toFixed(2);
             this.$axios.post('/commodity/saveCommodity',{"rid": parseInt(localStorage.rid), "cid":-1, "name": this.name, "price": this.price, "amount": this.amount, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0}).then(
               res => {
