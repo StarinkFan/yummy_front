@@ -65,6 +65,7 @@
         value-format="yyyy-MM-dd"
         placeholder="选择起始日期"
         :picker-options="pickerOptions0"
+        @change="getOptions"
         style="margin-top: 20px">
       </el-date-picker>
       <el-date-picker
@@ -73,6 +74,7 @@
         value-format="yyyy-MM-dd"
         placeholder="选择结束日期"
         :picker-options="pickerOptions1"
+        @change="getOptions"
         style="margin-top: 20px">
       </el-date-picker>
       <el-popover v-for="(item,name) in items" v-bind:key="name" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px; margin-top: 10px">
@@ -83,14 +85,14 @@
           <el-tag size="medium">{{ item.name }}</el-tag>
         </div>
       </el-popover>
-      <el-select v-model="newItem" disabled placeholder="请选择" style="margin-top: 20px">
+      <el-select v-model="newItem" :disabled="disabled" placeholder="请选择" style="margin-top: 20px">
         <el-option
           v-for="item in options"
-          :key="item"
-          :value="item">
+          :key="item.cid"
+          :value="item.name">
         </el-option>
       </el-select>
-      <el-button round style="margin-top: 30px" @click="addCommodity">添加套餐</el-button>
+      <el-button round style="margin-top: 30px" @click="addPackage">添加套餐</el-button>
     </el-card>
   </div>
 </template>
@@ -106,6 +108,7 @@
         newItem:"",
         beginDate:"",
         endDate:"",
+        disabled:true,
         packages: [
           {
             name: "套餐一",
@@ -138,17 +141,17 @@
         },
         pickerOptions1: {
           disabledDate: (time) => {
-            return time.getTime() <= Date.parse(that.beginDate) || time.getTime() <= Date.now();
+            return time.getTime() < Date.parse(that.beginDate) || time.getTime() <= Date.now();
           }
         },
       }
     },
     mounted() {
-      this.$axios.post('/commodity/getPackages',{rid: localStorage.rid}).then(
+      this.$axios.post('/package/getPackages',{rid: localStorage.rid}).then(
         res => {
           let data=res.data;
           for(let item of data){
-            item.disabled=item.beginDate <  Date.now();
+            item.disabled=Date.parse(item.beginDate) <  Date.now();
           }
           this.packages=data;
 
@@ -157,8 +160,23 @@
       });
     },
     methods:{
-      addCommodity(){
-        if(this.name===''||this.price===''||this.amount===''||this.beginDate===''||this.endDate===''){
+      getOptions(){
+        if(this.beginDate!==""&&this.endDate!==""){
+          this.disabled=false;
+          this.$axios.post('/package/getOptions',{rid: localStorage.rid, "beginDate": this.beginDate, "endDate": this.endDate}).then(
+            res => {
+              this.options=res.data;
+            }).catch(err => {
+            console.log(err)
+          });
+        }
+      },
+      addItem(){
+
+      },
+
+      addPackage(){
+        if(this.name===''||this.price===''||this.beginDate===''||this.endDate===''||this.items===[]){
           this.$message({
             message: '请将信息填写完整',
             type: 'error'
@@ -166,14 +184,23 @@
           return;
         }
         this.price=Number(this.price).toFixed(2);
-        this.$axios.post('/commodity/saveCommodity',{"rid": parseInt(localStorage.rid), "cid":-1, "name": this.name, "price": this.price, "amount": this.amount, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0}).then(
+        this.$axios.post('/package/savePackage',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "beginDate": this.beginDate, "endDate": this.endDate, "items":this.items}).then(
           res => {
             if(res.data>0){
               this.$message({
                 message: '添加成功',
                 type: 'success'
               });
-              this.commodities.push({"rid": parseInt(localStorage.rid), "cid":res.data, "name": this.name, "price": this.price, "amount": this.amount, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0, "disabled": Date.now()>=Date.parse(this.beginDate)});
+              this.$axios.post('/package/getPackages',{rid: localStorage.rid}).then(
+                res => {
+                  let data=res.data;
+                  for(let item of data){
+                    item.disabled=Date.parse(item.beginDate) <  Date.now();
+                  }
+                  this.packages=data;
+                }).catch(err => {
+                console.log(err)
+              });
             }else {
               this.$message({
                 message: '添加失败',
@@ -191,16 +218,6 @@
         this.amount="";
         this.beginDate="";
         this.endDate="";
-      },
-      clearNoNum(){
-        console.log("a");
-        console.log(this.price);
-        this.price = this.price.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
-        this.price = this.price.replace(/^\./g,""); //验证第一个字符是数字
-        this.price = this.price.replace(/\.{2,}/g,"."); //只保留第一个, 清除多余的
-        this.price = this.price.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
-        this.price = this.price.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
-        console.log("b");
       },
       deleteRow: function(index, row) {
         this.$axios.post('/commodity/deleteCommodity',{cid: row.cid}).then(

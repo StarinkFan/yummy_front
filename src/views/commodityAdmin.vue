@@ -106,7 +106,7 @@
           },
           pickerOptions1: {
             disabledDate: (time) => {
-              return time.getTime() <= Date.parse(that.beginDate) || time.getTime() <= Date.now();
+              return time.getTime() < Date.parse(that.beginDate) || time.getTime() <= Date.now();
             }
           },
         }
@@ -116,7 +116,7 @@
           res => {
             let data=res.data;
             for(let item of data){
-              item.disabled=item.beginDate <  Date.now();
+              item.disabled=Date.parse(item.beginDate) <  Date.now();
             }
             this.commodities=data;
 
@@ -141,7 +141,17 @@
                     message: '添加成功',
                     type: 'success'
                   });
-                  this.commodities.push({"rid": parseInt(localStorage.rid), "cid":res.data, "name": this.name, "price": this.price, "amount": this.amount, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0, "disabled": Date.now()>=Date.parse(this.beginDate)});
+                  this.$axios.post('/commodity/getCommodities',{rid: localStorage.rid}).then(
+                    res => {
+                      let data=res.data;
+                      for(let item of data){
+                        item.disabled=Date.parse(item.beginDate) <  Date.now();
+                      }
+                      this.commodities=data;
+
+                    }).catch(err => {
+                    console.log(err)
+                  });
                 }else if(res.data===-2){
                   this.$message({
                     message: '同期有重名商品，添加失败',
@@ -164,16 +174,6 @@
             this.amount="";
             this.beginDate="";
             this.endDate="";
-          },
-          clearNoNum(){
-            console.log("a");
-            console.log(this.price);
-            this.price = this.price.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
-            this.price = this.price.replace(/^\./g,""); //验证第一个字符是数字
-            this.price = this.price.replace(/\.{2,}/g,"."); //只保留第一个, 清除多余的
-            this.price = this.price.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
-            this.price = this.price.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
-            console.log("b");
           },
         deleteRow: function(index, row) {
           this.$axios.post('/commodity/deleteCommodity',{cid: row.cid}).then(
