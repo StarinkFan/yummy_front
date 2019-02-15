@@ -85,11 +85,13 @@
           <el-tag size="medium">{{ item.name }}</el-tag>
         </div>
       </el-popover>
-      <el-select v-model="newItem" :disabled="disabled" placeholder="请选择" style="margin-top: 20px">
+      <el-input v-model="num" placeholder="请输入新增单品数量" maxlength="3" minlength="1" @change="getOptions" onkeyup="value=value.replace(/[^\d]/g,'')" style="margin-top: 20px"></el-input>
+      <el-select v-model="selectedCommodity" value-key="cid" :disabled="disabled" placeholder="请选择" style="margin-top: 20px" @change="addItem">
         <el-option
           v-for="item in options"
           :key="item.cid"
-          :value="item.name">
+          :label="item.name"
+          :value="item">
         </el-option>
       </el-select>
       <el-button round style="margin-top: 30px" @click="addPackage">添加套餐</el-button>
@@ -105,9 +107,11 @@
       return{
         name:"",
         price:"",
-        newItem:"",
+        newItem:{},
+        selectedCommodity: {},
         beginDate:"",
         endDate:"",
+        num:"1",
         disabled:true,
         packages: [
           {
@@ -118,7 +122,7 @@
             items: [{
               name: "海鲜意面",
               price: 28,
-              num: 2
+              num: 2,
             },{
               name: "肉酱意面",
               price: 26,
@@ -154,14 +158,21 @@
             item.disabled=Date.parse(item.beginDate) <  Date.now();
           }
           this.packages=data;
-
+          for (let aPackage of this.packages){
+            this.$axios.post('/package/getPackageItems',{pid: aPackage.pid}).then(
+              res => {
+                aPackage.items=res.data;
+              }).catch(err => {
+              console.log(err)
+            });
+          }
         }).catch(err => {
         console.log(err)
       });
     },
     methods:{
       getOptions(){
-        if(this.beginDate!==""&&this.endDate!==""){
+        if(this.beginDate!==""&&this.endDate!==""&&this.num!==""){
           this.disabled=false;
           this.$axios.post('/package/getOptions',{rid: localStorage.rid, "beginDate": this.beginDate, "endDate": this.endDate}).then(
             res => {
@@ -172,7 +183,12 @@
         }
       },
       addItem(){
-
+        this.newItem={};
+        this.newItem.num=parseInt(this.num);
+        this.newItem.name=this.selectedCommodity.name;
+        this.newItem.cid=this.selectedCommodity.cid;
+        this.newItem.price=this.selectedCommodity.price;
+        this.items.push(this.newItem);
       },
 
       addPackage(){
