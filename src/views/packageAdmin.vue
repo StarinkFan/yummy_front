@@ -35,7 +35,7 @@
           fixed
           label="包含商品">
           <template slot-scope="scope">
-            <el-popover v-for="(item,name) in scope.row.items" v-bind:key="name" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px">
+            <el-popover v-for="(item,index) in scope.row.items" :key="index" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px">
               <p>名称: {{ item.name }}</p>
               <p>单价: {{ item.price }}</p>
               <p>数量: {{ item.num }}</p>
@@ -120,10 +120,12 @@
             beginDate: "2019-02-15",
             endDate: "2019-02-18",
             items: [{
+              piid:-1,
               name: "海鲜意面",
               price: 28,
               num: 2,
             },{
+              piid:-2,
               name: "肉酱意面",
               price: 26,
               num: 1
@@ -131,7 +133,7 @@
           }
         ],
         items: [],
-        options: ["海鲜意面","肉酱意面"],
+        options: [],
 
         pickerOptions0: {
           disabledDate(time) {
@@ -145,7 +147,7 @@
         },
         pickerOptions1: {
           disabledDate: (time) => {
-            return time.getTime() < Date.parse(that.beginDate) || time.getTime() <= Date.now();
+            return time.getTime() < Date.parse(that.beginDate) - 8.64e7|| time.getTime() <= Date.now();
           }
         },
       }
@@ -154,18 +156,12 @@
       this.$axios.post('/package/getPackages',{rid: localStorage.rid}).then(
         res => {
           let data=res.data;
-          for(let item of data){
-            item.disabled=Date.parse(item.beginDate) <  Date.now();
+          let length=data.length;
+          //let i=0;
+          for(let i=0;i<length;i++){
+            data[i].disabled=Date.parse(data[i].beginDate) <  Date.now();
           }
           this.packages=data;
-          for (let aPackage of this.packages){
-            this.$axios.post('/package/getPackageItems',{pid: aPackage.pid}).then(
-              res => {
-                aPackage.items=res.data;
-              }).catch(err => {
-              console.log(err)
-            });
-          }
         }).catch(err => {
         console.log(err)
       });
@@ -200,9 +196,9 @@
           return;
         }
         this.price=Number(this.price).toFixed(2);
-        this.$axios.post('/package/savePackage',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "beginDate": this.beginDate, "endDate": this.endDate, "items":this.items}).then(
+        this.$axios.post('/package/addPackage',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "beginDate": this.beginDate, "endDate": this.endDate, "items":this.items}).then(
           res => {
-            if(res.data>0){
+            if(res.data==true){
               this.$message({
                 message: '添加成功',
                 type: 'success'
@@ -210,8 +206,10 @@
               this.$axios.post('/package/getPackages',{rid: localStorage.rid}).then(
                 res => {
                   let data=res.data;
-                  for(let item of data){
-                    item.disabled=Date.parse(item.beginDate) <  Date.now();
+                  let length=data.length;
+                  //let i=0;
+                  for(let i=0;i<length;i++){
+                    data[i].disabled=Date.parse(data[i].beginDate) <  Date.now();
                   }
                   this.packages=data;
                 }).catch(err => {
@@ -236,14 +234,14 @@
         this.endDate="";
       },
       deleteRow: function(index, row) {
-        this.$axios.post('/commodity/deleteCommodity',{cid: row.cid}).then(
+        this.$axios.post('/package/deletePackage',{pid: row.pid}).then(
           res => {
             if(res.data===true){
               this.$message({
                 message: '删除成功',
                 type: 'success'
               });
-              this.commodities.splice(index, 1);
+              this.packages.splice(index, 1);
             }else{
               this.$message({
                 message: '删除失败',
