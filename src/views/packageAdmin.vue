@@ -57,7 +57,7 @@
     </el-card>
 
     <el-card style="margin-left: 5%; display: inline-block; width: 22%;padding: 20px; margin-top: 30px">
-      <el-input v-model="name" placeholder="请输入套餐名" maxlength="7" minlength="2"></el-input>
+      <el-input v-model="name" placeholder="请输入套餐名" maxlength="10" minlength="2"></el-input>
       <el-input v-model="price" placeholder="请输入价格" maxlength="8" minlength="1" onkeyup="value=value.replace(/[^\d.]/g, '').replace(/^\./g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')" style="margin-top: 20px"></el-input>
       <el-date-picker
         v-model="beginDate"
@@ -198,7 +198,7 @@
         this.price=Number(this.price).toFixed(2);
         this.$axios.post('/package/addPackage',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "beginDate": this.beginDate, "endDate": this.endDate, "items":this.items}).then(
           res => {
-            if(res.data==true){
+            if(res.data===true){
               this.$message({
                 message: '添加成功',
                 type: 'success'
@@ -217,7 +217,7 @@
               });
             }else {
               this.$message({
-                message: '添加失败',
+                message: '同期存在同名套餐，添加失败',
                 type: 'error'
               });
             }

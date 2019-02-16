@@ -8,6 +8,7 @@
           <ul class="nav navbar-nav" id="nav" style="width: 100%">
             <li><a href="/restaurant/commodityAdmin">单品管理</a></li>
             <li><a href="/restaurant/packageAdmin">套餐管理</a></li>
+            <li><a href="/restaurant/discountAdmin">折扣管理</a></li>
             <li><a href="/restaurant/restaurantOrderList">经营记录</a></li>
             <li><a href="/restaurant/restaurantCenter">餐厅中心</a></li>
             <li id="last" style="float: right;min-width: 8%;">
