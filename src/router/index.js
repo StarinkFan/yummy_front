@@ -61,6 +61,11 @@ const router = new Router({
             }
           ]
         },
+        {
+          name: "restaurantList",
+          path: "restaurantList",
+          component: () => import("@/views/restaurantList")
+        },
       ]
     },
     {
