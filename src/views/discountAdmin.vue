@@ -120,7 +120,7 @@
           return;
         }
         this.price=Number(this.price).toFixed(2);
-        this.$axios.post('/discount/addDiscount',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "amount": this.amount, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0}).then(
+        this.$axios.post('/discount/addDiscount',{"rid": parseInt(localStorage.rid), "total": this.total, "discount": this.discount, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0}).then(
           res => {
             if(res.data>0){
               this.$message({
@@ -133,8 +133,7 @@
                   for(let item of data){
                     item.disabled=Date.parse(item.beginDate) <  Date.now();
                   }
-                  this.commodities=data;
-
+                  this.discounts=data;
                 }).catch(err => {
                 console.log(err)
               });
@@ -145,7 +144,7 @@
               });
             }else if(res.data===-2){
               this.$message({
-                message: '同期有重名商品，添加失败',
+                message: '满额不得高于减额',
                 type: 'error'
               });
             }else{
@@ -167,7 +166,7 @@
                 message: '删除成功',
                 type: 'success'
               });
-              this.commodities.splice(index, 1);
+              this.discounts.splice(index, 1);
             }else{
               this.$message({
                 message: '删除失败',
