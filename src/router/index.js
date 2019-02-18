@@ -66,6 +66,11 @@ const router = new Router({
           path: "restaurantList",
           component: () => import("@/views/restaurantList")
         },
+        {
+          name: "restaurantDetail",
+          path: "restaurantDetail",
+          component: () => import("@/views/restaurantDetail")
+        },
       ]
     },
     {
