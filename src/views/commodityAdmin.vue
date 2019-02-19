@@ -178,15 +178,15 @@
         deleteRow: function(index, row) {
           this.$axios.post('/commodity/deleteCommodity',{cid: row.cid}).then(
             res => {
-              if(res.data===true){
+              if(res.data===1){
                 this.$message({
                   message: '删除成功',
                   type: 'success'
                 });
                 this.commodities.splice(index, 1);
-              }else{
+              }else if(res.data===-1){
                 this.$message({
-                  message: '删除失败',
+                  message: '商品已在套餐中，不可删除',
                   type: 'error'
                 });
               }

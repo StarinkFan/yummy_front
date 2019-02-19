@@ -97,12 +97,6 @@
           localStorage.restaurantId=row.rid;
           console.log(row.rid);
           this.$router.replace("/user/restaurantDetail");
-          this.$axios.post('/restaurant/getRestaurantDetailByUser', {rid: localStorage.restaurantId}).then(
-            res => {
-             console.log(res.data);
-            }).catch(err => {
-            console.log(err)
-          });
         }
       }
     }
