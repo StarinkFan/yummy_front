@@ -20,7 +20,14 @@
             <span slot="title">套餐列表</span>
           </el-menu-item>
         </el-menu>
-        <el-button type="primary" plain style="margin-top: 150px; margin-left: 30%">确认下单</el-button>
+        <el-select v-model="target" placeholder="请选择收货地址" style="margin-top: 60px; width: 100%;padding-left: 20px">
+          <el-option
+            v-for="item in targets"
+            :key="item.location"
+            :value="item.location">
+          </el-option>
+        </el-select>
+        <el-button type="primary" plain style="margin-top: 50px; margin-left: 30%" @click="placeOrder">确认下单</el-button>
       </div>
 
       <el-card class="box-card main">
@@ -126,7 +133,9 @@
               commodities:[],
               packages:[],
               discounts:[{total:100, discount:30}, {total: 150, discount: 50}],
-            naviIndex:1
+            naviIndex:1,
+            target:"",
+            targets:[]
           }
       },
       mounted(){
@@ -168,11 +177,23 @@
           }).catch(err => {
           console.log(err)
         });
+        this.$axios.post('/user/getTargets', {uid: localStorage.uid}).then(
+          res => {
+            this.targets=res.data;
+          }).catch(err => {
+          console.log(err)
+        });
       },
       methods:{
           changeNaviIndex(index, indexPath){
             this.naviIndex=parseInt(index);
-          }
+          },
+        placeOrder(){
+          this.$axios.post("/order", {"commodities":this.commodities, "packages": this.packages}).then(res => {
+            let data=res.data;
+            console.log(data);
+          });
+        }
       }
 
 
