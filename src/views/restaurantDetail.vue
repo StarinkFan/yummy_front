@@ -27,7 +27,7 @@
             :value="item.location">
           </el-option>
         </el-select>
-        <el-button type="primary" plain style="margin-top: 50px; margin-left: 30%" @click="placeOrder">确认下单</el-button>
+        <el-button type="primary" plain style="margin-top: 50px; margin-left: 30%" @click="checkDistance">确认下单</el-button>
       </div>
 
       <el-card class="box-card main">
@@ -188,8 +188,34 @@
           changeNaviIndex(index, indexPath){
             this.naviIndex=parseInt(index);
           },
+        checkDistance(){
+          if(this.target===''){
+            this.$message({
+              message: "请选择收货地址",
+              type: "error"
+            });
+            return;
+          }else{
+            this.$axios.post("/address/canConvey", {"departure":this.location, "target": this.target}).then(res => {
+              let data=res.data;
+              if(data>=0){
+                this.placeOrder();
+                localStorage.duration=data+10;
+                this.$message({
+                  message: "预计"+localStorage.duration+"分钟内送达",
+                  type: "info"
+                });
+              }else {
+                this.$message({
+                  message: "超出配送范围",
+                  type: "error"
+                });
+              }
+            });
+          }
+        },
         placeOrder(){
-          this.$axios.post("/order", {"commodities":this.commodities, "packages": this.packages}).then(res => {
+          this.$axios.post("/order/place", {"commodities":this.commodities, "packages": this.packages}).then(res => {
             let data=res.data;
             console.log(data);
           });
