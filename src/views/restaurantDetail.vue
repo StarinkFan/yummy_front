@@ -41,32 +41,37 @@
           <el-table-column
             fixed
             label="名称"
-            width="150"
             prop="name">
           </el-table-column>
           <el-table-column
             fixed
             label="单价"
-            width="100"
+            width="80"
             prop="price">
           </el-table-column>
           <el-table-column
             fixed
+            label="类型"
+            width="80"
+            prop="kind">
+          </el-table-column>
+          <el-table-column
+            fixed
             label="数量"
-            width="100"
+            width="80"
             prop="amount">
           </el-table-column>
           <el-table-column
             fixed
             label="已售"
-            width="100"
+            width="80"
             prop="sold">
           </el-table-column>
           <el-table-column
             fixed
             label="购买数量">
             <template slot-scope="scope">
-              <el-input-number v-model="scope.row.num" :min="0" :max="20" label="描述文字"></el-input-number>
+              <el-input-number v-model="scope.row.num" :min="0" :max="20" label="描述文字" style="width: 100%"></el-input-number>
             </template>
           </el-table-column>
         </el-table>
@@ -97,6 +102,7 @@
               <el-popover v-for="(item,index) in scope.row.items" :key="index" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px">
                 <p>名称: {{ item.name }}</p>
                 <p>单价: {{ item.price }}</p>
+                <p>类型: {{ item.kind }}</p>
                 <p>数量: {{ item.num }}</p>
                 <div slot="reference" class="name-wrapper">
                   <el-tag size="medium">{{ item.name }}</el-tag>
@@ -201,10 +207,6 @@
               if(data>=0){
                 this.placeOrder();
                 localStorage.duration=data+10;
-                this.$message({
-                  message: "预计"+localStorage.duration+"分钟内送达",
-                  type: "info"
-                });
               }else {
                 this.$message({
                   message: "超出配送范围",
@@ -215,9 +217,30 @@
           }
         },
         placeOrder(){
-          this.$axios.post("/order/place", {"commodities":this.commodities, "packages": this.packages}).then(res => {
+          this.$axios.post("/order/place", {"uid":localStorage.uid, "rid": localStorage.restaurantId, "commodities":this.commodities, "packages": this.packages, "target": this.target}).then(res => {
             let data=res.data;
-            console.log(data);
+            if(data>=0){
+              this.$message({
+                message: "下单成功，"+ "预计"+localStorage.duration+"分钟内送达",
+                type: "success"
+              });
+            }else if(data===-1){
+              this.$message({
+                message: "订单不得为空！",
+                type: "error"
+              });
+            }else if(data===-2){
+              this.$message({
+                message: "商品数量不足，请重新选择",
+                type: "error"
+              });
+            }else if(data===3){
+              this.$message({
+                message: "下单失败",
+                type: "error"
+              });
+            }
+
           });
         }
       }

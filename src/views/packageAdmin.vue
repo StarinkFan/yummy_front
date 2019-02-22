@@ -38,6 +38,7 @@
             <el-popover v-for="(item,index) in scope.row.items" :key="index" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px">
               <p>名称: {{ item.name }}</p>
               <p>单价: {{ item.price }}</p>
+              <p>类型: {{ item.kind }}</p>
               <p>数量: {{ item.num }}</p>
               <div slot="reference" class="name-wrapper">
                 <el-tag size="medium">{{ item.name }}</el-tag>
@@ -80,6 +81,7 @@
       <el-popover v-for="(item,name) in items" v-bind:key="name" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px; margin-top: 10px">
         <p>名称: {{ item.name }}</p>
         <p>单价: {{ item.price }}</p>
+        <p>类型: {{ item.kind }}</p>
         <p>数量: {{ item.num }}</p>
         <div slot="reference" class="name-wrapper">
           <el-tag size="medium">{{ item.name }}</el-tag>
@@ -122,11 +124,13 @@
             items: [{
               piid:-1,
               name: "海鲜意面",
+              kind:"主食",
               price: 28,
               num: 2,
             },{
               piid:-2,
               name: "肉酱意面",
+              kind:"主食",
               price: 26,
               num: 1
             }]
@@ -182,6 +186,7 @@
         this.newItem={};
         this.newItem.num=parseInt(this.num);
         this.newItem.name=this.selectedCommodity.name;
+        this.newItem.kind=this.selectedCommodity.kind;
         this.newItem.cid=this.selectedCommodity.cid;
         this.newItem.price=this.selectedCommodity.price;
         this.items.push(this.newItem);

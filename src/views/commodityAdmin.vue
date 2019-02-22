@@ -10,7 +10,6 @@
         <el-table-column
           fixed
           label="名称"
-          width="150"
           prop="name">
         </el-table-column>
         <el-table-column
@@ -21,14 +20,20 @@
         </el-table-column>
         <el-table-column
           fixed
+          label="类型"
+          width="80"
+          prop="kind">
+        </el-table-column>
+        <el-table-column
+          fixed
           label="起始时间"
-          width="130"
+          width="110"
           prop="beginDate">
         </el-table-column>
         <el-table-column
           fixed
           label="结束时间"
-          width="130"
+          width="110"
           prop="endDate">
         </el-table-column>
         <el-table-column
@@ -58,6 +63,14 @@
       <el-input v-model="name" placeholder="请输入商品名" maxlength="10" minlength="2"></el-input>
       <el-input v-model="price" placeholder="请输入价格" maxlength="8" minlength="1" onkeyup="value=value.replace(/[^\d.]/g, '').replace(/^\./g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')" style="margin-top: 20px"></el-input>
       <el-input v-model="amount" placeholder="请输入数量" maxlength="6" minlength="1" onkeyup="value=value.replace(/[^\d]/g,'')" style="margin-top: 20px"></el-input>
+      <el-select v-model="kind" placeholder="请选择类型" style="margin-top: 20px">
+        <el-option
+          v-for="item in kindOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
       <el-date-picker
         v-model="beginDate"
         type="date"
@@ -88,11 +101,26 @@
           name:"",
           price:"",
           amount:"",
+          kind:"",
           beginDate:"",
           endDate:"",
           commodities: [
 
           ],
+
+          kindOptions: [{
+            value: '主食',
+            label: '主食'
+          }, {
+            value: '小食',
+            label: '小食'
+          }, {
+            value: '饮品',
+            label: '饮品'
+          }, {
+            value: '其他',
+            label: '其他'
+          }],
 
           pickerOptions0: {
             disabledDate(time) {
@@ -126,7 +154,7 @@
       },
       methods:{
           addCommodity(){
-            if(this.name===''||this.price===''||this.amount===''||this.beginDate===''||this.endDate===''){
+            if(this.name===''||this.price===''||this.amount===''||this.beginDate===''||this.endDate===''||this.kind===''){
               this.$message({
                 message: '请将信息填写完整',
                 type: 'error'
@@ -134,7 +162,7 @@
               return;
             }
             this.price=Number(this.price).toFixed(2);
-            this.$axios.post('/commodity/saveCommodity',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "amount": this.amount, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0}).then(
+            this.$axios.post('/commodity/saveCommodity',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "amount": this.amount, "kind": this.kind, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0}).then(
               res => {
                 if(res.data>0){
                   this.$message({
