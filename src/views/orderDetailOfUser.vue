@@ -5,8 +5,8 @@
       <div class="infoColumn">
         <p>订单编号：{{order.oid}}</p>
         <p>订单状态：{{order.situation}}</p>
-        <p>餐厅编号：{{order.restaurantId}}</p>
-        <p>餐厅名称：{{order.restaurantName}}</p>
+        <p>餐厅编号：{{order.rid}}</p>
+        <p>餐厅名称：{{rname}}</p>
         <p v-if="order.state > 0">支付时间：{{order.payTime}}</p>
         <p v-if="order.state === 3">送达时间：{{order.arrivalTime}}</p>
       </div>
@@ -61,6 +61,7 @@
         name: "orderDetailOfUser",
       data(){
           return{
+            rname:"",
             order:{
               state:0,
               situation: "待支付",
@@ -111,6 +112,13 @@
             this.order=data.orderInfo;
             this.commodities=data.commodities;
             this.packages=data.packages;
+            this.$axios.post('/restaurant/getName', {rid: this.order.rid}).then(
+              res => {
+                this.rname=res.data;
+                console.log(this.rname);
+              }).catch(err => {
+              console.log(err)
+            });
           }).catch(err => {
           console.log(err)
         });
