@@ -68,11 +68,11 @@ const router = new Router({
         },
         {
           name: "restaurantDetail",
-          path: "restaurantDetail",
+          path: "restaurantDetail_:rid",
           component: () => import("@/views/restaurantDetail")
         },
         {
-          name: "orderDetail",
+          name: "orderDetailOfUser",
           path: "orderDetail",
           component: () => import("@/views/orderDetailOfUser")
         },

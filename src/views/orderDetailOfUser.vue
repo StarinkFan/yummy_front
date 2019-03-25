@@ -52,6 +52,8 @@
       </div>
       <el-button type="primary" plain v-if="order.state === 0" style="margin-top: 40px; margin-bottom: 20px">支付订单</el-button>
       <el-button type="primary" plain v-if="order.state < 2">取消订单</el-button>
+      <br>
+      <el-tag type="warning" v-if="order.state === 0">剩余付款时间: {{leftTime}}</el-tag>
     </el-card>
   </div>
 </template>
@@ -62,9 +64,10 @@
       data(){
           return{
             rname:"",
+            leftTime:"",
             order:{
-              state:0,
-              situation: "待支付",
+              state:3,
+              situation: "已送达",
             },
             commodities: [{
               name: "海鲜意面",
@@ -91,7 +94,8 @@
           }
       },
       mounted(){
-        this.$axios.post('/order/getDetail', {oid: "1"}).then(
+          console.log(this.$route.params.oid);
+        this.$axios.post('/order/getDetail', {oid: this.$route.params.oid}).then(
           res => {
             let data=res.data;
             switch(data.orderInfo.state){
@@ -112,6 +116,9 @@
             this.order=data.orderInfo;
             this.commodities=data.commodities;
             this.packages=data.packages;
+            if(this.order.state===0){
+              this.setTimer();
+            }
             this.$axios.post('/restaurant/getName', {rid: this.order.rid}).then(
               res => {
                 this.rname=res.data;
@@ -122,6 +129,28 @@
           }).catch(err => {
           console.log(err)
         });
+      },
+      methods:{
+          setTimer(){
+            let leftSeconds=120-parseInt( (Date.now() - Date.parse(this.order.createTime))/1000);
+            let leftMinutes=parseInt(leftSeconds/60);
+            leftSeconds=leftSeconds-leftMinutes*60;
+            this.leftTime=leftMinutes+"分"+leftSeconds+"秒";
+            let myScroll = setInterval(() => {
+              let leftSeconds=120-parseInt( (Date.now() - Date.parse(this.order.createTime))/1000);
+              let leftMinutes=parseInt(leftSeconds/60);
+              leftSeconds=leftSeconds-leftMinutes*60;
+              this.leftTime=leftMinutes+"分"+leftSeconds+"秒";
+              if(leftSeconds===0&&leftMinutes===0) {
+                clearTimeout(myScroll);    //清除定时器
+                this.$message({
+                  message: "超时未支付，订单取消！",
+                  type: "warning"
+                });
+                this.$router.replace("/user/restaurantDetail");
+              }
+            }, 1000);
+          }
       }
 
     }

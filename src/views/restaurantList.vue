@@ -94,9 +94,7 @@
       },
       methods:{
         checkRestaurant(row){
-          localStorage.restaurantId=row.rid;
-          console.log(row.rid);
-          this.$router.replace("/user/restaurantDetail");
+          this.$router.push({name:"restaurantDetail", params: {rid: row.rid}});
         }
       }
     }

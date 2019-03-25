@@ -145,7 +145,7 @@
           }
       },
       mounted(){
-        this.$axios.post('/restaurant/getRestaurantDetailByUser', {rid: localStorage.restaurantId}).then(
+        this.$axios.post('/restaurant/getRestaurantDetailByUser', {rid: this.$route.params.rid}).then(
           res => {
             let data=res.data;
             this.name=data.name;
@@ -221,9 +221,11 @@
             let data=res.data;
             if(data>=0){
               this.$message({
-                message: "下单成功，"+ "预计"+localStorage.duration+"分钟内送达",
+                message: "下单成功！",
                 type: "success"
               });
+              localStorage.oid=data;
+              this.$router.push({name:"orderDetailOfUser", params: {oid: data}});
             }else if(data===-1){
               this.$message({
                 message: "订单不得为空！",
