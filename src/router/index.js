@@ -76,6 +76,11 @@ const router = new Router({
           path: "orderDetail",
           component: () => import("@/views/orderDetailOfUser")
         },
+        {
+          name: "orderListOfUser",
+          path: "orderList",
+          component: () => import("@/views/orderListOfUser")
+        },
       ]
     },
     {

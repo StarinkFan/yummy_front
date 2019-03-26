@@ -8,15 +8,15 @@
         <p>餐厅编号：{{order.rid}}</p>
         <p>餐厅名称：{{rname}}</p>
         <p v-if="order.state > 0">支付时间：{{order.payTime}}</p>
-        <p v-if="order.state === 3">送达时间：{{order.arrivalTime}}</p>
+        <p v-if="order.state === 2">送达时间：{{order.arrivalTime}}</p>
       </div>
       <div class="infoColumn">
         <p>下单时间：{{order.createTime}}</p>
         <p>商品总额：{{order.total}}</p>
         <p>订单折扣：{{order.discount}}</p>
         <p>应付金额：{{order.pay}}</p>
-        <p v-if="order.state === 2">退款金额：{{order.refund}}</p>
-        <p v-if="order.state === 2">退款时间：{{order.refundTime}}</p>
+        <p v-if="order.state === 3">退款金额：{{order.refund}}</p>
+        <p v-if="order.state === 3">退款时间：{{order.refundTime}}</p>
       </div>
       <div style="width: 80%; margin-left: 10%; margin-top: 30px; margin-bottom: 40px">
         商品：
@@ -52,6 +52,8 @@
       </div>
       <el-button type="primary" plain v-if="order.state === 0" style="margin-bottom: 20px" @click="showPayPanel">支付订单</el-button>
       <el-button type="primary" plain v-if="order.state === 1" style="margin-bottom: 20px" @click="refund">取消订单</el-button>
+      <el-button type="primary" plain v-if="order.state === 1" style="margin-bottom: 20px" @click="confirmArrival">确认送达</el-button>
+
       <br>
       <el-tag type="warning" v-if="order.state === 0">剩余付款时间: {{leftTime}}</el-tag>
     </el-card>
@@ -179,6 +181,19 @@
               });
               this.getDetail();
               this.paying=false;
+              let myScroll = setInterval(() => {
+                let leftSeconds=60*60-parseInt( (Date.now() - Date.parse(this.order.payTime))/1000);
+                let leftMinutes=parseInt(leftSeconds/60);
+                leftSeconds=leftSeconds-leftMinutes*60;
+                if(leftSeconds===0&&leftMinutes===0) {
+                  clearTimeout(myScroll);    //清除定时器
+                  this.$message({
+                    message: "超时未确认，已自动确认送达！",
+                    type: "warning"
+                  });
+                  this.getDetail();
+                }
+              }, 1000);
             }else if(data===-1){
               this.$message({
                 message: "账户或密码错误",
@@ -218,6 +233,7 @@
                     type: "success"
                   });
                 }
+                this.getDetail();
 
               }else{
                 this.$message({
@@ -229,7 +245,28 @@
             }).catch(err => {
             console.log(err)
           });
+        },
+        confirmArrival(){
+          this.$axios.post('/order/arrive',{oid: this.$route.params.oid}).then(
+            res => {
+              let data=res.data;
+              if(data===true){
+                this.$message({
+                  message: "确认送达，交易完成",
+                  type: "success"
+                });
+                this.getDetail()
+              }else{
+                this.$message({
+                  message: "确认失败，请重试",
+                  type: "error"
+                });
+              }
+            }).catch(err => {
+            console.log(err)
+          });
         }
+
       }
 
     }

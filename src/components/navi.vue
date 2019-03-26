@@ -7,7 +7,7 @@
         <div class="collapse navbar-collapse" id="myNavbar" style="display: inline-block;font-size: 16px;width: 100%">
           <ul class="nav navbar-nav" id="nav" style="width: 100%">
             <li><a href="/user/restaurantList">点餐大厅</a></li>
-            <li><a href="/user/personalOrderList">我的订单</a></li>
+            <li><a href="/user/orderList">我的订单</a></li>
             <li><a href="/user/personalCenter">个人中心</a></li>
             <li><a href="/guide">平台指南</a></li>
             <li id="last" style="float: right;min-width: 8%;">
