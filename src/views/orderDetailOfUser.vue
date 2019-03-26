@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%;text-align: center">
-    <el-card class="box-card main" style="width: 60%;margin-left: 20%; margin-top: 50px">
+    <el-card class="box-card main" style="width: 60%;margin-left: 20%; margin-top: 50px" v-if="!paying">
       <h1 style="color: lightskyblue;margin-bottom: 30px">订单详情</h1>
       <div class="infoColumn">
         <p>订单编号：{{order.oid}}</p>
@@ -18,7 +18,7 @@
         <p v-if="order.state === 2">退款金额：{{order.refund}}</p>
         <p v-if="order.state === 2">退款时间：{{order.refundTime}}</p>
       </div>
-      <div style="width: 80%; margin-left: 10%; margin-top: 30px">
+      <div style="width: 80%; margin-left: 10%; margin-top: 30px; margin-bottom: 40px">
         商品：
         <el-popover v-for="(item,index) in commodities" :key="index" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px">
           <p>名称: {{ item.name }}</p>
@@ -50,10 +50,17 @@
           </div>
         </el-popover>
       </div>
-      <el-button type="primary" plain v-if="order.state === 0" style="margin-top: 40px; margin-bottom: 20px">支付订单</el-button>
-      <el-button type="primary" plain v-if="order.state < 2">取消订单</el-button>
+      <el-button type="primary" plain v-if="order.state === 0" style="margin-bottom: 20px" @click="showPayPanel">支付订单</el-button>
+      <el-button type="primary" plain v-if="order.state === 1" style="margin-bottom: 20px" @click="refund">取消订单</el-button>
       <br>
       <el-tag type="warning" v-if="order.state === 0">剩余付款时间: {{leftTime}}</el-tag>
+    </el-card>
+    <el-card class="box-card main" style="width: 40%;margin-left: 30%; margin-top: 50px"  v-if="paying">
+      <h3 style="float: top;" align="center">付款</h3>
+      <el-input id="account" class="loginInput" v-model="account" style="margin-top: 6%;" placeholder="请输入银行账户" maxLength="10"></el-input>
+      <el-input id="password" type="password" v-model="password" class="loginInput" style="margin-top: 8%;" align="center" placeholder="请输入密码" maxLength="15"></el-input><br>
+      <el-button type="primary" plain v-if="order.state === 0" style="margin-top: 40px; margin-bottom: 20px" @click="pay">确认</el-button>
+      <el-button type="primary" plain v-if="order.state === 0" style="margin-top: 40px; margin-bottom: 20px" @click="hidePayPanel">取消</el-button>
     </el-card>
   </div>
 </template>
@@ -63,6 +70,9 @@
         name: "orderDetailOfUser",
       data(){
           return{
+            paying: false,
+            account:"",
+            password:"",
             rname:"",
             leftTime:"",
             order:{
@@ -94,43 +104,45 @@
           }
       },
       mounted(){
-          console.log(this.$route.params.oid);
-        this.$axios.post('/order/getDetail', {oid: this.$route.params.oid}).then(
-          res => {
-            let data=res.data;
-            switch(data.orderInfo.state){
-              case 0:
-                data.orderInfo.situation="待支付";
-                break;
-              case 1:
-                data.orderInfo.situation="派送中";
-                break;
-              case 2:
-                data.orderInfo.situation="已送达";
-                break;
-              case 3:
-                data.orderInfo.situation="已退款";
-                break;
-            }
-            console.log(data);
-            this.order=data.orderInfo;
-            this.commodities=data.commodities;
-            this.packages=data.packages;
-            if(this.order.state===0){
-              this.setTimer();
-            }
-            this.$axios.post('/restaurant/getName', {rid: this.order.rid}).then(
+        this.getDetail();
+      },
+      methods:{
+          getDetail(){
+            this.$axios.post('/order/getDetail', {oid: this.$route.params.oid}).then(
               res => {
-                this.rname=res.data;
-                console.log(this.rname);
+                let data=res.data;
+                switch(data.orderInfo.state){
+                  case 0:
+                    data.orderInfo.situation="待支付";
+                    break;
+                  case 1:
+                    data.orderInfo.situation="派送中";
+                    break;
+                  case 2:
+                    data.orderInfo.situation="已送达";
+                    break;
+                  case 3:
+                    data.orderInfo.situation="已退款";
+                    break;
+                }
+                console.log(data);
+                this.order=data.orderInfo;
+                this.commodities=data.commodities;
+                this.packages=data.packages;
+                if(this.order.state===0){
+                  this.setTimer();
+                }
+                this.$axios.post('/restaurant/getName', {rid: this.order.rid}).then(
+                  res => {
+                    this.rname=res.data;
+                    console.log(this.rname);
+                  }).catch(err => {
+                  console.log(err)
+                });
               }).catch(err => {
               console.log(err)
             });
-          }).catch(err => {
-          console.log(err)
-        });
-      },
-      methods:{
+          },
           setTimer(){
             let leftSeconds=120-parseInt( (Date.now() - Date.parse(this.order.createTime))/1000);
             let leftMinutes=parseInt(leftSeconds/60);
@@ -147,10 +159,77 @@
                   message: "超时未支付，订单取消！",
                   type: "warning"
                 });
-                this.$router.replace("/user/restaurantDetail");
+                this.$router.replace("/user/restaurantList");
               }
             }, 1000);
-          }
+          },
+        showPayPanel(){
+            this.paying=true;
+        },
+        hidePayPanel(){
+          this.paying=false;
+        },
+        pay(){
+          this.$axios.post("/bankAccount/pay", {oid:this.order.oid, shouldPay: this.order.pay, account: this.account, password: this.password}).then(res => {
+            let data=res.data;
+            if(data>0){
+              this.$message({
+                message: "支付成功，预计"+localStorage.duration+"分钟内送达",
+                type: "success"
+              });
+              this.getDetail();
+              this.paying=false;
+            }else if(data===-1){
+              this.$message({
+                message: "账户或密码错误",
+                type: "error"
+              });
+            }else if(data===-2){
+              this.$message({
+                message: "余额不足",
+                type: "error"
+              });
+            }else{
+              this.$message({
+                message: "支付失败",
+                type: "error"
+              });
+            }
+          });
+        },
+        refund(){
+          this.$axios.post('/order/refund',{oid: this.$route.params.oid}).then(
+            res => {
+              let data=res.data;
+              if(data>0){
+                if(data===2){
+                  this.$message({
+                    message: "退款成功, 两分钟内全额退款",
+                    type: "success"
+                  });
+                }else if(data===10){
+                  this.$message({
+                    message: "退款成功, 十分钟内退八成",
+                    type: "success"
+                  });
+                }else{
+                  this.$message({
+                    message: "退款成功, 超十分钟，退一半",
+                    type: "success"
+                  });
+                }
+
+              }else{
+                this.$message({
+                  message: "退款失败",
+                  type: "error"
+                });
+              }
+
+            }).catch(err => {
+            console.log(err)
+          });
+        }
       }
 
     }
@@ -167,5 +246,9 @@
 .infoColumn p{
   font-size: 14px;
   margin: 20px;
+}
+
+.loginInput{
+  width: 90%;
 }
 </style>
