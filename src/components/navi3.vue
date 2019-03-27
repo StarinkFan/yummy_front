@@ -8,7 +8,7 @@
           <ul class="nav navbar-nav" id="nav" style="width: 100%">
             <li><a href="/manager/applyAdmin">餐厅审批</a></li>
             <li><a href="/manager/modifyAdmin">修改审批</a></li>
-            <li><a href="/manager/balanceDesign">结算设计</a></li>
+            <li><a href="/manager/rulesDesign">结算设计</a></li>
             <li><a href="/manager/statistics">平台统计</a></li>
             <li id="last" style="float: right;min-width: 8%;">
               <a id="logout" v-on:click="logout">退出</a>

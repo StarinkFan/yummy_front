@@ -120,7 +120,7 @@
           return;
         }
         this.price=Number(this.price).toFixed(2);
-        this.$axios.post('/discount/addDiscount',{"rid": parseInt(localStorage.rid), "total": this.total, "discount": this.discount, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0}).then(
+        this.$axios.post('/discount/addDiscount',{"rid": parseInt(localStorage.rid), "total": this.total, "discount": this.discount, "beginDate": this.beginDate, "endDate": this.endDate}).then(
           res => {
             if(res.data>0){
               this.$message({

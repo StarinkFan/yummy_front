@@ -157,6 +157,11 @@ const router = new Router({
           path: "modificationDetail",
           component: () => import("@/views/modificationDetail")
         },
+        {
+          name: "rulesDesign",
+          path: "rulesDesign",
+          component: () => import("@/views/rulesDesign")
+        },
       ]
     }
 
