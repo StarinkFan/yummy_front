@@ -120,6 +120,11 @@ const router = new Router({
           path: "discountAdmin",
           component: () => import("@/views/discountAdmin")
         },
+        {
+          name: "orderListOfRestaurant",
+          path: "orderList",
+          component: () => import("@/views/orderListOfRestaurant")
+        },
       ]
     },
     {

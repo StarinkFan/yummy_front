@@ -6,7 +6,7 @@
         <p>订单编号：{{order.oid}}</p>
         <p>订单状态：{{order.situation}}</p>
         <p>餐厅编号：{{order.rid}}</p>
-        <p>餐厅名称：{{rname}}</p>
+        <p>餐厅名称：{{order.rname}}</p>
         <p v-if="order.state > 0">支付时间：{{order.payTime}}</p>
         <p v-if="order.state === 2">送达时间：{{order.arrivalTime}}</p>
       </div>
@@ -75,7 +75,6 @@
             paying: false,
             account:"",
             password:"",
-            rname:"",
             leftTime:"",
             order:{
               state:3,
@@ -134,13 +133,6 @@
                 if(this.order.state===0){
                   this.setTimer();
                 }
-                this.$axios.post('/restaurant/getName', {rid: this.order.rid}).then(
-                  res => {
-                    this.rname=res.data;
-                    console.log(this.rname);
-                  }).catch(err => {
-                  console.log(err)
-                });
               }).catch(err => {
               console.log(err)
             });

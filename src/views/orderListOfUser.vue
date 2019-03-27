@@ -45,7 +45,7 @@
       <el-table-column
         fixed
         label="金额"
-        width="100"
+        width="80"
         prop="pay">
       </el-table-column>
       <el-table-column
@@ -69,7 +69,7 @@
 
 <script>
     export default {
-        name: "OrderListOfUser",
+        name: "orderListOfUser",
       data(){
           return{
             orders: [],

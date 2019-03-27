@@ -9,7 +9,7 @@
             <li><a href="/restaurant/commodityAdmin">单品管理</a></li>
             <li><a href="/restaurant/packageAdmin">套餐管理</a></li>
             <li><a href="/restaurant/discountAdmin">折扣管理</a></li>
-            <li><a href="/restaurant/restaurantOrderList">经营记录</a></li>
+            <li><a href="/restaurant/orderList">经营记录</a></li>
             <li><a href="/restaurant/restaurantCenter">餐厅中心</a></li>
             <li id="last" style="float: right;min-width: 8%;">
               <a id="logout" v-on:click="logout">退出</a>
