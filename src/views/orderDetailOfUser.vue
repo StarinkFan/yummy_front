@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%;text-align: center">
-    <el-card class="box-card main" style="width: 60%;margin-left: 20%; margin-top: 50px" v-if="!paying">
+    <el-card class="box-card main" style="width: 60%;margin-left: 20%; margin-top: 50px;margin-bottom: 70px" v-if="!paying">
       <h1 style="color: lightskyblue;margin-bottom: 30px">订单详情</h1>
       <div class="infoColumn">
         <p>订单编号：{{order.oid}}</p>
@@ -8,14 +8,14 @@
         <p>餐厅编号：{{order.rid}}</p>
         <p>餐厅名称：{{order.rname}}</p>
         <p v-if="order.state > 0">支付时间：{{order.payTime}}</p>
-        <p v-if="order.state === 2">送达时间：{{order.arrivalTime}}</p>
+        <p v-if="order.state === 3">退款金额：{{order.refund}}</p>
       </div>
       <div class="infoColumn">
         <p>下单时间：{{order.createTime}}</p>
         <p>商品总额：{{order.total}}</p>
         <p>订单折扣：{{order.discount}}</p>
         <p>应付金额：{{order.pay}}</p>
-        <p v-if="order.state === 3">退款金额：{{order.refund}}</p>
+        <p v-if="order.state === 2">送达时间：{{order.arrivalTime}}</p>
         <p v-if="order.state === 3">退款时间：{{order.refundTime}}</p>
       </div>
       <div style="width: 80%; margin-left: 10%; margin-top: 30px; margin-bottom: 40px">
