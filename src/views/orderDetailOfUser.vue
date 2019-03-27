@@ -72,6 +72,7 @@
         name: "orderDetailOfUser",
       data(){
           return{
+            myScroll:{},
             paying: false,
             account:"",
             password:"",
@@ -142,13 +143,13 @@
             let leftMinutes=parseInt(leftSeconds/60);
             leftSeconds=leftSeconds-leftMinutes*60;
             this.leftTime=leftMinutes+"分"+leftSeconds+"秒";
-            let myScroll = setInterval(() => {
+            this.myScroll = setInterval(() => {
               let leftSeconds=120-parseInt( (Date.now() - Date.parse(this.order.createTime))/1000);
               let leftMinutes=parseInt(leftSeconds/60);
               leftSeconds=leftSeconds-leftMinutes*60;
               this.leftTime=leftMinutes+"分"+leftSeconds+"秒";
               if(leftSeconds===0&&leftMinutes===0) {
-                clearTimeout(myScroll);    //清除定时器
+                clearTimeout(this.myScroll);    //清除定时器
                 this.$message({
                   message: "超时未支付，订单取消！",
                   type: "warning"
@@ -167,18 +168,19 @@
           this.$axios.post("/bankAccount/pay", {oid:this.order.oid, shouldPay: this.order.pay, account: this.account, password: this.password}).then(res => {
             let data=res.data;
             if(data>0){
+              clearTimeout(this.myScroll);
               this.$message({
                 message: "支付成功，预计"+localStorage.duration+"分钟内送达",
                 type: "success"
               });
               this.getDetail();
               this.paying=false;
-              let myScroll = setInterval(() => {
+              this.myScroll = setInterval(() => {
                 let leftSeconds=60*60-parseInt( (Date.now() - Date.parse(this.order.payTime))/1000);
                 let leftMinutes=parseInt(leftSeconds/60);
                 leftSeconds=leftSeconds-leftMinutes*60;
                 if(leftSeconds===0&&leftMinutes===0) {
-                  clearTimeout(myScroll);    //清除定时器
+                  clearTimeout(this.myScroll);    //清除定时器
                   this.$message({
                     message: "超时未确认，已自动确认送达！",
                     type: "warning"

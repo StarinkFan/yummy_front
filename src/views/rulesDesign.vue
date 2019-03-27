@@ -9,12 +9,12 @@
         style="overflow-x: hidden">
         <el-table-column
           fixed
-          label="上限"
+          label="上限（元）"
           prop="top">
         </el-table-column>
         <el-table-column
           fixed
-          label="提成"
+          label="提成（%）"
           prop="percent">
         </el-table-column>
         <el-table-column

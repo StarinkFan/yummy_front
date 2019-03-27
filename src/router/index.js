@@ -162,6 +162,11 @@ const router = new Router({
           path: "rulesDesign",
           component: () => import("@/views/rulesDesign")
         },
+        {
+          name: "systemStatistics",
+          path: "statistics",
+          component: () => import("@/views/systemStatistics")
+        },
       ]
     }
 
