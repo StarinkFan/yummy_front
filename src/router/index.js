@@ -108,6 +108,11 @@ const router = new Router({
               path: "editRestaurantInfo",
               component: () => import("@/views/editRestaurantInfo")
             },
+            {
+              name: "restaurantStatistics",
+              path: "statistics",
+              component: () => import("@/views/restaurantStatistics")
+            },
           ]
         },
         {
