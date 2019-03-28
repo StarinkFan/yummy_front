@@ -58,7 +58,12 @@ const router = new Router({
               name: "applySuccess",
               path: "restaurantApply/applySuccess",
               component: () => import("@/views/applySuccess")
-            }
+            },
+            {
+              name: "personalStatistics",
+              path: "statistics",
+              component: () => import("@/views/personalStatistics")
+            },
           ]
         },
         {

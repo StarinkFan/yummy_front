@@ -33,9 +33,8 @@
       </el-table-column>
       <el-table-column
         fixed
-        label="商家编号"
-        width="80"
-        prop="rid">
+        label="商家名称"
+        prop="rname">
       </el-table-column>
       <el-table-column
         fixed

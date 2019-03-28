@@ -217,7 +217,7 @@
           }
         },
         placeOrder(){
-          this.$axios.post("/order/place", {"uid":localStorage.uid, "rid": localStorage.restaurantId, "commodities":this.commodities, "packages": this.packages, "target": this.target}).then(res => {
+          this.$axios.post("/order/place", {"uid":localStorage.uid, "rid": this.$route.params.rid, "commodities":this.commodities, "packages": this.packages, "target": this.target}).then(res => {
             let data=res.data;
             if(data>=0){
               this.$message({
