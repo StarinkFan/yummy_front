@@ -1,11 +1,11 @@
 <template>
   <div style="width: 100%;text-align: center">
     <h1 style="color: lightskyblue; margin-top: 50px">单品管理</h1>
-    <el-card class="box-card" style="width: 56%; vertical-align: top;display: inline-block; min-height: 500px; margin-top: 30px;margin-bottom: 30px">
+    <el-card class="box-card" style="width: 56%; vertical-align: top;display: inline-block; min-height: 540px; margin-top: 30px;margin-bottom: 30px">
       <el-table
         :data="commodities"
         stripe
-        height="500"
+        height="540"
         style="overflow-x: hidden">
         <el-table-column
           fixed
@@ -14,15 +14,15 @@
         </el-table-column>
         <el-table-column
           fixed
-          label="单价"
-          width="80"
-          prop="price">
-        </el-table-column>
-        <el-table-column
-          fixed
           label="类型"
           width="80"
           prop="kind">
+        </el-table-column>
+        <el-table-column
+          fixed
+          label="单价"
+          width="80"
+          prop="price">
         </el-table-column>
         <el-table-column
           fixed
@@ -38,18 +38,19 @@
         </el-table-column>
         <el-table-column
           fixed
-          label="操作"
-          width="80">
+          label="操作">
           <template slot-scope="scope">
-            <>
-            <el-button @click="deleteRow(scope.$index, scope.row)" type="text" size="small" :disabled="scope.row.disabled" v-if="scope.$row.ifValid === true">下架</el-button>
-            <el-button @click="deleteRow(scope.$index, scope.row)" type="text" size="small" :disabled="scope.row.disabled" v-else>上架</el-button>
+            <el-button @click="checkDetail(scope.$index, scope.row)" type="text" size="small">详情</el-button>
+            <el-button @click="invalidate(scope.row)" type="text" size="small" v-if="scope.row.ifValid === true">下架</el-button>
+            <el-button @click="validate(scope.row)" type="text" size="small" v-else>上架</el-button>
+            <el-button @click="deleteRow(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
     <el-card style="margin-left: 5%; display: inline-block; width: 22%;padding: 20px; margin-top: 30px">
+      <p v-if="cid >= 0" style="color: lightgray;float: left">ID：{{cid}}</p>
       <div class="photoPart">
         <input type="file" class="photoChoose" id="photoChoose" accept="image/png,image/jpg,image/gif,image/JPEG" style="display: none;"/>
         <label for="photoChoose">
@@ -72,9 +73,11 @@
         :autosize="{ minRows: 3, maxRows: 5}"
         placeholder="请输入描述"
         v-model="description"
+        maxlength="30"
         style="margin-top: 20px">
       </el-input>
-      <el-button round style="margin-top: 30px" @click="addCommodity">添加单品</el-button>
+      <el-button round style="margin-top: 30px" @click="addCommodity">保存单品</el-button><br>
+      <a style="padding-top: 10px;cursor: pointer" @click="clear" v-if="cid >= 0">返回</a>
     </el-card>
   </div>
 </template>
@@ -85,12 +88,12 @@
       data(){
           let that=this;
         return{
+          cid:-1,
           name:"",
           price:"",
-          amount:"",
           kind:"",
           description:"",
-          photoSrc: '/static/pic/defaultPic.jpg',
+          photoSrc: '/static/pic/defaultLackPic.png',
           commodities: [
 
           ],
@@ -124,12 +127,8 @@
         });
         this.$axios.post('/commodity/getCommodities',{rid: localStorage.rid}).then(
           res => {
-            let data=res.data;
-            for(let item of data){
-              item.disabled=Date.parse(item.beginDate) <  Date.now();
-            }
-            this.commodities=data;
-
+            this.commodities=res.data;
+            console.log(this.commodities);
           }).catch(err => {
           console.log(err)
         });
@@ -145,7 +144,7 @@
               return;
             }
             this.price=Number(this.price).toFixed(2);
-            this.$axios.post('/commodity/saveCommodity',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "amount": this.amount, "kind": this.kind, "beginDate": this.beginDate, "endDate": this.endDate, "sold": 0}).then(
+            this.$axios.post('/commodity/saveCommodity',{"cid":this.cid,"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "kind": this.kind, "photo":this.photoSrc, "description":this.description}).then(
               res => {
                 if(res.data>0){
                   this.$message({
@@ -180,11 +179,12 @@
             //this.clear();
           },
           clear(){
+            this.cid=-1;
             this.name="";
+            this.photo="https://njuhzl.oss-cn-hangzhou.aliyuncs.com/yummy/defaultLackPic.png";
+            this.kind="";
             this.price="";
-            this.amount="";
-            this.beginDate="";
-            this.endDate="";
+            this.description="";
           },
         deleteRow: function(index, row) {
           this.$axios.post('/commodity/deleteCommodity',{cid: row.cid}).then(
@@ -206,7 +206,57 @@
             console.log(err)
           });
         },
+        validate(row){
+          this.$axios.post('/commodity/validate',{cid: row.cid}).then(
+            res => {
+              if(res.data===true){
+                this.$message({
+                  message: '成功上架',
+                  type: 'success'
+                });
+                row.ifValid=true;
+                row.state="销售中";
+              }else{
+                this.$message({
+                  message: '上架失败',
+                  type: 'error'
+                });
+              }
 
+            }).catch(err => {
+            console.log(err)
+          });
+        },
+        invalidate(row){
+          this.$axios.post('/commodity/invalidate',{cid: row.cid}).then(
+            res => {
+              if(res.data===true){
+                this.$message({
+                  message: '成功下架',
+                  type: 'success'
+                });
+                row.ifValid=false;
+                row.state="已下架";
+              }else{
+                this.$message({
+                  message: '商品已在套餐中，下架失败',
+                  type: 'error'
+                });
+              }
+
+            }).catch(err => {
+            console.log(err)
+          });
+        },
+        checkDetail(index, row){
+            this.name=row.name;
+            this.cid=row.cid;
+            this.price=row.price;
+            console.log(row.photo);
+            this.photoSrc=row.photo;
+            this.kind=row.kind;
+            this.description=row.description;
+        },
 
         html5Reader(file, item) {
           const reader = new FileReader();
@@ -280,6 +330,7 @@
 <style scoped>
   .photoPart{
     position: relative;
+    clear: left;
   }
 
   #photo{
