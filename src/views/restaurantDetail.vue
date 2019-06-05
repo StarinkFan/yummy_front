@@ -1,10 +1,19 @@
 <template>
-  <div style="width: 100%;text-align: center">
+  <div style="width: 100%;text-align: center; margin-bottom: 50px">
     <div style="width: 50%;margin-left: 25%">
       <h1 style="color: lightskyblue;margin-bottom: 20px">商品列表</h1>
-      <h4>欢迎光临 {{name}}</h4>
+      <h4>欢迎光临 <strong>{{name}}</strong></h4>
       <p style="display: inline-block;margin-right: 30px">类型：{{kind}}</p>
-      <p style="display: inline-block">地址：{{location}}</p><br>
+      <p style="display: inline-block">地址：{{location}}</p>
+      <p style="display: inline-block; margin-left: 10px"><i class="el-icon-location-information"></i> {{distance}}km,{{time}}min</p>
+      <el-select v-model="target" placeholder="请选择收货地址" style="margin-top: 10px; width:60%;margin-bottom: 20px">
+        <el-option
+          v-for="item in targets"
+          :key="item.location"
+          :value="item.location">
+        </el-option>
+      </el-select>
+      <a style="margin-left: 10px;cursor: pointer" @click="showLocationCard">新增收货地址</a><br>
       <el-tag v-for="item in discounts" :key="item.did" style="margin-right: 10px">满{{item.total}}减{{item.discount}}</el-tag>
     </div>
 
@@ -20,14 +29,6 @@
             <span slot="title">套餐列表</span>
           </el-menu-item>
         </el-menu>
-        <el-select v-model="target" placeholder="请选择收货地址" style="margin-top: 60px; width: 100%;padding-left: 20px">
-          <el-option
-            v-for="item in targets"
-            :key="item.location"
-            :value="item.location">
-          </el-option>
-        </el-select>
-        <el-button type="primary" plain style="margin-top: 50px; margin-left: 30%" @click="checkDistance">确认下单</el-button>
       </div>
 
       <el-card class="box-card main">
@@ -122,13 +123,28 @@
       </el-card>
 
     </div>
+
+
+    <el-button type="primary" plain style="margin-top: 10px; width: 20%" @click="checkDistance">确认下单</el-button>
+
+    <div id="cover"></div>
+    <el-card id="locationCard">
+      <location-selector></location-selector>
+      <div style="display: flex; justify-content: space-around">
+        <el-button style="width: 150px" round>添  加</el-button>
+        <el-button style="width: 150px" @click="hideLocationCard" round>取  消</el-button>
+      </div>
+    </el-card>
   </div>
 
 </template>
 
 <script>
+  import locationSelector from '@/components/locationSelector.vue'
+
     export default {
         name: "restaurantDetail",
+      components:{locationSelector},
       data(){
           return{
               rid:0,
@@ -141,7 +157,11 @@
               discounts:[{total:100, discount:30}, {total: 150, discount: 50}],
             naviIndex:1,
             target:"",
-            targets:[]
+            targets:[],
+            distance: 1.0,
+            time: 15,
+            newRegion:"全国",
+            newLocation:""
           }
       },
       mounted(){
@@ -244,6 +264,18 @@
             }
 
           });
+        },
+        showLocationCard(){
+          $("#cover").css("display", "inherit");
+          $("#locationCard").css("display", "inherit");
+        },
+        hideLocationCard(){
+          $("#cover").css("display", "none");
+          $("#locationCard").css("display", "none");
+        },
+        addressSelected(location, region){
+            this.newRegion=region;
+            this.newLocation=location;
         }
       }
 
@@ -262,4 +294,25 @@
   margin-left: 12%;
   padding: 5px;
 }
+
+#cover {
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  position: fixed;
+  top: 0;
+  background-color: black;
+  opacity: 0.5;
+  display: none;
+  text-align: center;
+}
+
+  #locationCard{
+    display: none;
+    position: fixed;
+    top:200px;
+    width: 50%;
+    z-index: 30;
+    left: 25%
+  }
 </style>

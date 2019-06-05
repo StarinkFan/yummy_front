@@ -1,11 +1,12 @@
 <template>
-  <div style="width: 100%">
-    <div class="block" style="padding-left: 20px">
-      <span class="demonstration" style="font-size: 14px">省份/城市/地区</span>
+  <div style="width: 100%;padding: 30px">
+    <div class="block" style="width: 100%; display: flex; align-items: center; justify-content: space-between">
+      <span class="demonstration" style="font-size: 14px;">省份/城市/地区</span>
       <el-cascader
         :options="areas"
         v-model="selectedArea"
         @change="handleAreaSelect"
+        style="width: 66%"
       >
       </el-cascader>
     </div>
@@ -20,7 +21,7 @@
       :loading="loading"
       :disabled="disabled"
       @change="addressSelected"
-      style="min-width: 600px;margin-top: 20px">
+      style="min-width: 400px;margin-top: 20px;width: 100%">
       <el-option
         v-for="item in options"
         :key="item"
@@ -50,7 +51,8 @@
         remoteMethod(query) {
           if (query !== '') {
             this.loading = true;
-            this.$axios.post('/address/getSimilarLocations', {keyword: this.selectedArea[2]+query, area: this.selectedArea[1]}).then(
+            let area=this.selectedArea[1]==="市辖区"? this.selectedArea[0]: this.selectedArea[1];
+            this.$axios.post('/address/getSimilarLocations', {keyword: this.selectedArea[2]+query, area: area}).then(
               res => {
                 this.options = res.data;
                 console.log(this.options);
@@ -66,11 +68,14 @@
           let location="";
           let region="全国";
           for(let i=0;i<this.selectedArea.length;i++){
-            location=location+this.selectedArea[i];
-            if (this.selectedArea.length===i+2){
-              region=this.selectedArea[i];
-              console.log(region);
+            if(this.selectedArea[i]!=="市辖区"){
+              location=location+this.selectedArea[i];
             }
+          }
+          if (this.selectedArea[1]!=="市辖区"){
+            region=this.selectedArea[1];
+          }else{
+            region=this.selectedArea[0];
           }
           location=location+value;
           this.$parent.addressSelected(location, region);

@@ -9,27 +9,29 @@
   <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
   <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
   <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <!--<script>-->
-    <!--window.onload=function () {-->
-      <!--Array.prototype.min=function () {-->
-        <!--var min=this[0];-->
-        <!--for(var i=1; i<this.length; i++){-->
-          <!--if(this[i]<min){-->
-            <!--min=this[i];-->
-          <!--}-->
-        <!--}-->
-        <!--return min;-->
-      <!--};-->
-      <!--var arr=[1, 56, 34, 12];-->
-      <!--var total=0;-->
-      <!--for(var i in arr){-->
-        <!--console.log(i);-->
-        <!--console.log(arr[i]);-->
-        <!--total+=parseInt(arr[i], 10);-->
-      <!--}-->
-      <!--console.log(total)-->
-    <!--}-->
-  <!--</script>-->
+  <script>
+    window.onload=function () {
+      function test() {
+        let a = 4;
+        b = 1;
+        (function () {
+          print(a, b);
+        })();
+      }
+
+      function print(a, b) {
+        console.log(a, b);
+      }
+
+      let a = 1;
+      let b = 3;
+
+      test();
+      print(a, b);
+
+
+    }
+  </script>
 
 
 
@@ -38,7 +40,7 @@
   &lt;!&ndash; 引入组件库 &ndash;&gt;
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
 </head>
-<body style="min-width: 1000px;min-height: 100%">
+<body style="min-width: 1080px;min-height: 100%">
 <div id="app"></div>
 <!-- built files will be auto injected -->
 </body>

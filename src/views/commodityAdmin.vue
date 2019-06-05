@@ -26,43 +26,39 @@
         </el-table-column>
         <el-table-column
           fixed
-          label="起始时间"
-          width="110"
-          prop="beginDate">
-        </el-table-column>
-        <el-table-column
-          fixed
-          label="结束时间"
-          width="110"
-          prop="endDate">
-        </el-table-column>
-        <el-table-column
-          fixed
-          label="数量"
-          width="80"
-          prop="amount">
-        </el-table-column>
-        <el-table-column
-          fixed
-          label="已售"
+          label="销量"
           width="80"
           prop="sold">
+        </el-table-column>
+        <el-table-column
+          fixed
+          label="状态"
+          width="80"
+          prop="state">
         </el-table-column>
         <el-table-column
           fixed
           label="操作"
           width="80">
           <template slot-scope="scope">
-            <el-button @click="deleteRow(scope.$index, scope.row)" type="text" size="small" :disabled="scope.row.disabled">删除</el-button>
+            <>
+            <el-button @click="deleteRow(scope.$index, scope.row)" type="text" size="small" :disabled="scope.row.disabled" v-if="scope.$row.ifValid === true">下架</el-button>
+            <el-button @click="deleteRow(scope.$index, scope.row)" type="text" size="small" :disabled="scope.row.disabled" v-else>上架</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
     <el-card style="margin-left: 5%; display: inline-block; width: 22%;padding: 20px; margin-top: 30px">
+      <div class="photoPart">
+        <input type="file" class="photoChoose" id="photoChoose" accept="image/png,image/jpg,image/gif,image/JPEG" style="display: none;"/>
+        <label for="photoChoose">
+          <img id="photo" :src="photoSrc">
+        </label>
+        <p style="color: lightgray">点击上传商品照片</p>
+      </div>
       <el-input v-model="name" placeholder="请输入商品名" maxlength="10" minlength="2"></el-input>
       <el-input v-model="price" placeholder="请输入价格" maxlength="8" minlength="1" onkeyup="value=value.replace(/[^\d.]/g, '').replace(/^\./g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')" style="margin-top: 20px"></el-input>
-      <el-input v-model="amount" placeholder="请输入数量" maxlength="6" minlength="1" onkeyup="value=value.replace(/[^\d]/g,'')" style="margin-top: 20px"></el-input>
       <el-select v-model="kind" placeholder="请选择类型" style="margin-top: 20px">
         <el-option
           v-for="item in kindOptions"
@@ -71,22 +67,13 @@
           :value="item.value">
         </el-option>
       </el-select>
-      <el-date-picker
-        v-model="beginDate"
-        type="date"
-        value-format="yyyy-MM-dd"
-        placeholder="选择起始日期"
-        :picker-options="pickerOptions0"
+      <el-input
+        type="textarea"
+        :autosize="{ minRows: 3, maxRows: 5}"
+        placeholder="请输入描述"
+        v-model="description"
         style="margin-top: 20px">
-      </el-date-picker>
-      <el-date-picker
-        v-model="endDate"
-        type="date"
-        value-format="yyyy-MM-dd"
-        placeholder="选择结束日期"
-        :picker-options="pickerOptions1"
-        style="margin-top: 20px">
-      </el-date-picker>
+      </el-input>
       <el-button round style="margin-top: 30px" @click="addCommodity">添加单品</el-button>
     </el-card>
   </div>
@@ -102,8 +89,8 @@
           price:"",
           amount:"",
           kind:"",
-          beginDate:"",
-          endDate:"",
+          description:"",
+          photoSrc: '/static/pic/defaultPic.jpg',
           commodities: [
 
           ],
@@ -120,26 +107,21 @@
           }, {
             value: '其他',
             label: '其他'
-          }],
-
-          pickerOptions0: {
-            disabledDate(time) {
-              if (that.endDate !== "") {
-                return time.getTime() <= Date.now() || time.getTime() >= Date.parse(that.endDate);
-              } else {
-                return time.getTime() <= Date.now();
-              }
-
-            }
-          },
-          pickerOptions1: {
-            disabledDate: (time) => {
-              return time.getTime() < Date.parse(that.beginDate) || time.getTime() <= Date.now();
-            }
-          },
+          }]
         }
       },
       mounted() {
+        let that=this;
+        $("#photoChoose").change(function(e){
+          const file = e.target.files[0];
+          const item = {
+            name: file.name,
+            size: file.size,
+            file: file
+          };
+          that.html5Reader(file, item);
+          that.submit(item, "p");
+        });
         this.$axios.post('/commodity/getCommodities',{rid: localStorage.rid}).then(
           res => {
             let data=res.data;
@@ -151,6 +133,7 @@
           }).catch(err => {
           console.log(err)
         });
+
       },
       methods:{
           addCommodity(){
@@ -224,10 +207,84 @@
           });
         },
 
+
+        html5Reader(file, item) {
+          const reader = new FileReader();
+          reader.onload = e => {
+            this.$set(item, "src", e.target.result);
+          };
+          reader.readAsDataURL(file);
+        },
+        timestamp: function() {
+          const time = new Date();
+          const y = time.getFullYear();
+          const m = time.getMonth() + 1;
+          const d = time.getDate();
+          const h = time.getHours();
+          const mm = time.getMinutes();
+          const s = time.getSeconds();
+          const ms = time.getMilliseconds();
+          return (
+            "" +
+            y +
+            this.Add0(m) +
+            this.Add0(d) +
+            this.Add0(h) +
+            this.Add0(mm) +
+            this.Add0(s) +
+            this.Add0(ms)
+          );
+        },
+
+        Add0: function(m) {
+          return m < 10 ? "0" + m : m;
+        },
+        submit(file, value) {
+          let that = this;
+          //console.log(that.photoSrc);
+          let OSS = require("ali-oss");
+          const client = new OSS({
+            region: "oss-cn-hangzhou",
+            accessKeyId: "LTAIL4RFw3fPAweH",
+            accessKeySecret: "xOw4hzztNsCPm5LtJoWVwsvSOFl8IB",
+            bucket: "njuhzl"
+          });
+          let f = file.file;
+          console.log(f);
+          const Name = f.name;
+          console.log(Name);
+          const suffix = Name.substr(Name.indexOf("."));
+          const obj = this.timestamp();
+          const storeAs = "yummy/" + obj + suffix; //  路径+时间戳+后缀名
+          console.log(storeAs);
+          client
+            .multipartUpload(storeAs, f)
+            .then(function(result) {
+              let data = result.res.requestUrls[0];
+              let url = data.split("?uploadId")[0];
+              console.log(url);
+              if(value==="p"){
+                that.photoSrc=url;
+              }else{
+                that.certificateSrc=url;
+              }
+            })
+            .catch(function(err) {
+              console.log(err);
+            });
+        },
       }
     }
 </script>
 
 <style scoped>
+  .photoPart{
+    position: relative;
+  }
 
+  #photo{
+    width: 90px;
+    height: 90px;
+    cursor: pointer;
+  }
 </style>
