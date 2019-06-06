@@ -51,7 +51,7 @@
           label="操作"
           width="80">
           <template slot-scope="scope">
-            <el-button @click="deleteRow(scope.$index, scope.row)" type="text" size="small" :disabled="scope.row.disabled">删除</el-button>
+            <el-button @click="deleteRow(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -60,24 +60,6 @@
     <el-card style="margin-left: 5%; display: inline-block; width: 22%;padding: 20px; margin-top: 30px">
       <el-input v-model="name" placeholder="请输入套餐名" maxlength="10" minlength="2"></el-input>
       <el-input v-model="price" placeholder="请输入价格" maxlength="8" minlength="1" onkeyup="value=value.replace(/[^\d.]/g, '').replace(/^\./g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')" style="margin-top: 20px"></el-input>
-      <el-date-picker
-        v-model="beginDate"
-        type="date"
-        value-format="yyyy-MM-dd"
-        placeholder="选择起始日期"
-        :picker-options="pickerOptions0"
-        @change="getOptions"
-        style="margin-top: 20px">
-      </el-date-picker>
-      <el-date-picker
-        v-model="endDate"
-        type="date"
-        value-format="yyyy-MM-dd"
-        placeholder="选择结束日期"
-        :picker-options="pickerOptions1"
-        @change="getOptions"
-        style="margin-top: 20px">
-      </el-date-picker>
       <el-popover v-for="(item,name) in items" v-bind:key="name" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px; margin-top: 10px">
         <p>名称: {{ item.name }}</p>
         <p>单价: {{ item.price }}</p>
@@ -85,10 +67,11 @@
         <p>数量: {{ item.num }}</p>
         <div slot="reference" class="name-wrapper">
           <el-tag size="medium">{{ item.name }}</el-tag>
+          <i class="el-icon-circle-close" style="color: lightgrey;cursor: pointer;font-size: 15px;z-index:10; vertical-align: 8px; margin-left: -12px" @click="deleteItem(item.name)"></i>
         </div>
       </el-popover>
-      <el-input v-model="num" placeholder="请输入新增单品数量" maxlength="3" minlength="1" @change="getOptions" onkeyup="value=value.replace(/[^\d]/g,'')" style="margin-top: 20px"></el-input>
-      <el-select v-model="selectedCommodity" value-key="cid" :disabled="disabled" placeholder="请选择" style="margin-top: 20px" @change="addItem">
+      <el-input v-model="num" placeholder="请输入新增单品数量" maxlength="3" minlength="1" onkeyup="value=value.replace(/[^\d]/g,'')" style="margin-top: 20px"></el-input>
+      <el-select v-model="selectedCommodity" value-key="cid" placeholder="请选择单品" style="margin-top: 20px" @change="addItem">
         <el-option
           v-for="item in options"
           :key="item.cid"
@@ -114,7 +97,6 @@
         beginDate:"",
         endDate:"",
         num:"1",
-        disabled:true,
         packages: [
           {
             name: "套餐一",
@@ -138,50 +120,23 @@
         ],
         items: [],
         options: [],
-
-        pickerOptions0: {
-          disabledDate(time) {
-            if (that.endDate !== "") {
-              return time.getTime() <= Date.now() || time.getTime() >= Date.parse(that.endDate);
-            } else {
-              return time.getTime() <= Date.now();
-            }
-
-          }
-        },
-        pickerOptions1: {
-          disabledDate: (time) => {
-            return time.getTime() < Date.parse(that.beginDate) - 8.64e7|| time.getTime() <= Date.now();
-          }
-        },
       }
     },
     mounted() {
       this.$axios.post('/package/getPackages',{rid: localStorage.rid}).then(
         res => {
-          let data=res.data;
-          let length=data.length;
-          //let i=0;
-          for(let i=0;i<length;i++){
-            data[i].disabled=Date.parse(data[i].beginDate) <  Date.now();
-          }
-          this.packages=data;
+          this.packages=res.data;
+        }).catch(err => {
+        console.log(err)
+      });
+      this.$axios.post('/package/getOptions',{rid: localStorage.rid}).then(
+        res => {
+          this.options=res.data;
         }).catch(err => {
         console.log(err)
       });
     },
     methods:{
-      getOptions(){
-        if(this.beginDate!==""&&this.endDate!==""&&this.num!==""){
-          this.disabled=false;
-          this.$axios.post('/package/getOptions',{rid: localStorage.rid, "beginDate": this.beginDate, "endDate": this.endDate}).then(
-            res => {
-              this.options=res.data;
-            }).catch(err => {
-            console.log(err)
-          });
-        }
-      },
       addItem(){
         this.newItem={};
         this.newItem.num=parseInt(this.num);
@@ -192,8 +147,17 @@
         this.items.push(this.newItem);
       },
 
+      deleteItem(name){
+        console.log(name);
+        for(let i=0;i<this.items.length;i++){
+          if(this.items[i].name===name){
+            this.items.splice(i,1);
+          }
+        }
+      },
+
       addPackage(){
-        if(this.name===''||this.price===''||this.beginDate===''||this.endDate===''||this.items===[]){
+        if(this.name===''||this.price===''||this.items===[]){
           this.$message({
             message: '请将信息填写完整',
             type: 'error'
@@ -210,12 +174,6 @@
               });
               this.$axios.post('/package/getPackages',{rid: localStorage.rid}).then(
                 res => {
-                  let data=res.data;
-                  let length=data.length;
-                  //let i=0;
-                  for(let i=0;i<length;i++){
-                    data[i].disabled=Date.parse(data[i].beginDate) <  Date.now();
-                  }
                   this.packages=data;
                 }).catch(err => {
                 console.log(err)
