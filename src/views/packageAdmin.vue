@@ -151,6 +151,8 @@
         this.newItem.kind=this.selectedCommodity.kind;
         this.newItem.cid=this.selectedCommodity.cid;
         this.newItem.price=this.selectedCommodity.price;
+        this.newItem.photo=this.selectedCommodity.photo;
+        this.newItem.description=this.selectedCommodity.description;
         this.items.push(this.newItem);
       },
 
