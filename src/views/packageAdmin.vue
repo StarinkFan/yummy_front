@@ -9,8 +9,13 @@
         style="overflow-x: hidden">
         <el-table-column
           fixed
+          label="ID"
+          width="50"
+          prop="pid">
+        </el-table-column>
+        <el-table-column
+          fixed
           label="名称"
-          width="120"
           prop="name">
         </el-table-column>
         <el-table-column
@@ -21,36 +26,38 @@
         </el-table-column>
         <el-table-column
           fixed
-          label="起始时间"
-          width="100"
-          prop="beginDate">
+          label="销量"
+          width="80"
+          prop="sold">
+        </el-table-column>
+        <!--<el-table-column-->
+          <!--fixed-->
+          <!--label="包含商品">-->
+          <!--<template slot-scope="scope">-->
+            <!--<el-popover v-for="(item,index) in scope.row.items" :key="index" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px">-->
+              <!--<p>名称: {{ item.name }}</p>-->
+              <!--<p>单价: {{ item.price }}</p>-->
+              <!--<p>类型: {{ item.kind }}</p>-->
+              <!--<p>数量: {{ item.num }}</p>-->
+              <!--<div slot="reference" class="name-wrapper">-->
+                <!--<el-tag size="medium">{{ item.name }}</el-tag>-->
+              <!--</div>-->
+            <!--</el-popover>-->
+          <!--</template>-->
+        <!--</el-table-column>-->
+        <el-table-column
+          fixed
+          label="状态"
+          width="80"
+          prop="state">
         </el-table-column>
         <el-table-column
           fixed
-          label="结束时间"
-          width="100"
-          prop="endDate">
-        </el-table-column>
-        <el-table-column
-          fixed
-          label="包含商品">
+          label="操作">
           <template slot-scope="scope">
-            <el-popover v-for="(item,index) in scope.row.items" :key="index" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px">
-              <p>名称: {{ item.name }}</p>
-              <p>单价: {{ item.price }}</p>
-              <p>类型: {{ item.kind }}</p>
-              <p>数量: {{ item.num }}</p>
-              <div slot="reference" class="name-wrapper">
-                <el-tag size="medium">{{ item.name }}</el-tag>
-              </div>
-            </el-popover>
-          </template>
-        </el-table-column>
-        <el-table-column
-          fixed
-          label="操作"
-          width="80">
-          <template slot-scope="scope">
+            <el-button @click="checkDetail(scope.$index, scope.row)" type="text" size="small">详情</el-button>
+            <el-button @click="invalidate(scope.row)" type="text" size="small" v-if="scope.row.ifValid === true">下架</el-button>
+            <el-button @click="validate(scope.row)" type="text" size="small" v-else>上架</el-button>
             <el-button @click="deleteRow(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -58,6 +65,7 @@
     </el-card>
 
     <el-card style="margin-left: 5%; display: inline-block; width: 22%;padding: 20px; margin-top: 30px">
+      <p v-if="pid >= 0" style="color: lightgray;float: left">ID：{{pid}}</p>
       <el-input v-model="name" placeholder="请输入套餐名" maxlength="10" minlength="2"></el-input>
       <el-input v-model="price" placeholder="请输入价格" maxlength="8" minlength="1" onkeyup="value=value.replace(/[^\d.]/g, '').replace(/^\./g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')" style="margin-top: 20px"></el-input>
       <el-popover v-for="(item,name) in items" v-bind:key="name" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px; margin-top: 10px">
@@ -79,7 +87,8 @@
           :value="item">
         </el-option>
       </el-select>
-      <el-button round style="margin-top: 30px" @click="addPackage">添加套餐</el-button>
+      <el-button round style="margin-top: 30px" @click="addPackage">保存套餐</el-button><br>
+      <a style="padding-top: 10px;cursor: pointer" @click="clear" v-if="pid >= 0">返回</a>
     </el-card>
   </div>
 </template>
@@ -90,19 +99,17 @@
     data(){
       let that=this;
       return{
+        pid:-1,
         name:"",
         price:"",
+        photo:"",
         newItem:{},
         selectedCommodity: {},
-        beginDate:"",
-        endDate:"",
         num:"1",
         packages: [
           {
             name: "套餐一",
             price:70,
-            beginDate: "2019-02-15",
-            endDate: "2019-02-18",
             items: [{
               piid:-1,
               name: "海鲜意面",
@@ -165,7 +172,7 @@
           return;
         }
         this.price=Number(this.price).toFixed(2);
-        this.$axios.post('/package/addPackage',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "beginDate": this.beginDate, "endDate": this.endDate, "items":this.items}).then(
+        this.$axios.post('/package/addPackage',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "items":this.items}).then(
           res => {
             if(res.data===true){
               this.$message({
@@ -190,11 +197,15 @@
         //this.clear();
       },
       clear(){
+        this.pid=-1;
         this.name="";
+        this.photo="https://njuhzl.oss-cn-hangzhou.aliyuncs.com/yummy/defaultLackPic.png";
         this.price="";
-        this.amount="";
-        this.beginDate="";
-        this.endDate="";
+        this.description="";
+        this.newItem={};
+        this.selectedCommodity= {};
+        this.items = [];
+        this.num="1";
       },
       deleteRow: function(index, row) {
         this.$axios.post('/package/deletePackage',{pid: row.pid}).then(
@@ -215,6 +226,14 @@
           }).catch(err => {
           console.log(err)
         });
+      },
+      checkDetail(index, row){
+        this.name=row.name;
+        this.pid=row.pid;
+        this.price=row.price;
+        this.photo=row.photo;
+        this.description=row.description;
+        this.items=row.items;
       },
 
     }

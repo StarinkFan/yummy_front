@@ -9,6 +9,12 @@
         style="overflow-x: hidden">
         <el-table-column
           fixed
+          label="ID"
+          width="50"
+          prop="cid">
+        </el-table-column>
+        <el-table-column
+          fixed
           label="名称"
           prop="name">
         </el-table-column>
@@ -252,7 +258,6 @@
             this.name=row.name;
             this.cid=row.cid;
             this.price=row.price;
-            console.log(row.photo);
             this.photoSrc=row.photo;
             this.kind=row.kind;
             this.description=row.description;
