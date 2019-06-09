@@ -66,7 +66,8 @@
 
     <el-card style="margin-left: 5%; display: inline-block; width: 22%;padding: 20px; margin-top: 30px">
       <p v-if="pid >= 0" style="color: lightgray;float: left">ID：{{pid}}</p>
-      <el-input v-model="name" placeholder="请输入套餐名" maxlength="10" minlength="2"></el-input>
+      <el-input v-model="name" placeholder="请输入套餐名" maxlength="10" minlength="2"@blur="checkSameName" id="name"></el-input>
+      <p style="color: red; margin-bottom: -14px" v-show="hasSameName"><i  class="el-icon-error"></i>有同名套餐，请修改名称！</p>
       <el-input v-model="price" placeholder="请输入价格" maxlength="8" minlength="1" onkeyup="value=value.replace(/[^\d.]/g, '').replace(/^\./g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')" style="margin-top: 20px"></el-input>
       <el-popover v-for="(item,name) in items" v-bind:key="name" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px; margin-top: 10px">
         <p>名称: {{ item.name }}</p>
@@ -127,6 +128,7 @@
         ],
         items: [],
         options: [],
+        hasSameName:false
       }
     },
     mounted() {
@@ -237,6 +239,21 @@
         this.description=row.description;
         this.items=row.items;
       },
+      checkSameName(){
+        this.$axios.post('/package/hasSameName',{rid:localStorage.rid, pid: this.pid,name: this.name}).then(
+          res => {
+            if(res.data===true){
+              $("#name").focus();
+              this.hasSameName=true;
+            }else{
+              this.hasSameName=false;
+            }
+
+          }).catch(err => {
+          console.log(err)
+        });
+      },
+
 
     }
   }

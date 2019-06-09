@@ -64,7 +64,8 @@
         </label>
         <p style="color: lightgray">点击上传商品照片</p>
       </div>
-      <el-input v-model="name" placeholder="请输入商品名" maxlength="10" minlength="2"></el-input>
+      <el-input v-model="name" placeholder="请输入商品名" maxlength="10" minlength="2"@blur="checkSameName" id="name"></el-input>
+      <p style="color: red; margin-bottom: -14px" v-show="hasSameName"><i  class="el-icon-error"></i>有同名商品，请修改名称！</p>
       <el-input v-model="price" placeholder="请输入价格" maxlength="8" minlength="1" onkeyup="value=value.replace(/[^\d.]/g, '').replace(/^\./g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')" style="margin-top: 20px"></el-input>
       <el-select v-model="kind" placeholder="请选择类型" style="margin-top: 20px">
         <el-option
@@ -116,7 +117,8 @@
           }, {
             value: '其他',
             label: '其他'
-          }]
+          }],
+          hasSameName:false
         }
       },
       mounted() {
@@ -261,6 +263,20 @@
             this.photoSrc=row.photo;
             this.kind=row.kind;
             this.description=row.description;
+        },
+        checkSameName(){
+          this.$axios.post('/commodity/hasSameName',{rid:localStorage.rid, cid: this.cid,name: this.name}).then(
+            res => {
+              if(res.data===true){
+                $("#name").focus();
+                this.hasSameName=true;
+              }else{
+                this.hasSameName=false;
+              }
+
+            }).catch(err => {
+            console.log(err)
+          });
         },
 
         html5Reader(file, item) {
