@@ -176,7 +176,7 @@
           return;
         }
         this.price=Number(this.price).toFixed(2);
-        this.$axios.post('/package/addPackage',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price, "items":this.items}).then(
+        this.$axios.post('/package/addPackage',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price,  "description":this.description, "items":this.items}).then(
           res => {
             if(res.data===true){
               this.$message({
@@ -247,6 +247,48 @@
               this.hasSameName=true;
             }else{
               this.hasSameName=false;
+            }
+
+          }).catch(err => {
+          console.log(err)
+        });
+      },
+      validate(row){
+        this.$axios.post('/package/validate',{pid: row.pid}).then(
+          res => {
+            if(res.data===true){
+              this.$message({
+                message: '成功上架',
+                type: 'success'
+              });
+              row.ifValid=true;
+              row.state="销售中";
+            }else{
+              this.$message({
+                message: '上架失败',
+                type: 'error'
+              });
+            }
+
+          }).catch(err => {
+          console.log(err)
+        });
+      },
+      invalidate(row){
+        this.$axios.post('/package/invalidate',{pid: row.pid}).then(
+          res => {
+            if(res.data===true){
+              this.$message({
+                message: '成功下架',
+                type: 'success'
+              });
+              row.ifValid=false;
+              row.state="已下架";
+            }else{
+              this.$message({
+                message: '下架失败',
+                type: 'error'
+              });
             }
 
           }).catch(err => {
