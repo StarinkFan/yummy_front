@@ -33,8 +33,8 @@
           label="操作">
           <template slot-scope="scope">
             <el-button @click="edit(scope.$index, scope.row)" type="text" size="small">修改</el-button>
-            <el-button @click="invalidate(scope.row)" type="text" size="small" v-if="scope.row.ifValid === true">使用</el-button>
-            <el-button @click="validate(scope.row)" type="text" size="small" v-else>弃用</el-button>
+            <el-button @click="invalidate(scope.row)" type="text" size="small" v-if="scope.row.ifValid === true">弃用</el-button>
+            <el-button @click="validate(scope.row)" type="text" size="small" v-else>使用</el-button>
             <el-button @click="deleteRow(scope.$index, scope.row)" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>

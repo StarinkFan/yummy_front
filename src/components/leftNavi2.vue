@@ -2,14 +2,14 @@
   <div style="width: 20%;display: inline-block;margin-left: 8%;margin-top: 50px;">
     <el-menu
       class="el-menu-vertical-demo">
-      <a href="/restaurant/restaurantCenter"><el-menu-item index="1">
+      <router-link to="/restaurant/restaurantCenter"><el-menu-item index="1">
         <i class="el-icon-info"></i>
         <span slot="title">餐厅信息</span>
-      </el-menu-item></a>
-      <a href="/restaurant/restaurantCenter/statistics"><el-menu-item index="2">
+      </el-menu-item></router-link>
+      <router-link to="/restaurant/restaurantCenter/statistics"><el-menu-item index="2">
         <i class="el-icon-document"></i>
         <span slot="title">财务整理</span>
-      </el-menu-item></a>
+      </el-menu-item></router-link>
     </el-menu>
   </div>
 </template>

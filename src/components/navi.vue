@@ -1,22 +1,30 @@
 <template>
   <div class="whole" id="navi" style="width:100%;">
-    <a href="/"><img src="/static/pic/logo.png" id="naviLogo" class="img-responsive logo" alt="Cinque Terre"></a>
+    <router-link to="/"><img src="/static/pic/logo.png" id="naviLogo" class="img-responsive logo" alt="Cinque Terre"></router-link>>
 
     <nav class="navbar navbar-inverse wholeNav">
       <div class="container-fluid" style="width: 100%">
         <div class="collapse navbar-collapse" id="myNavbar" style="display: inline-block;font-size: 16px;width: 100%">
           <ul class="nav navbar-nav" id="nav" style="width: 100%">
-            <li><a href="/user/restaurantList">点餐大厅</a></li>
-            <li><a href="/user/orderList">我的订单</a></li>
-            <li><a href="/user/personalCenter">个人中心</a></li>
-            <li><a href="/guide">平台指南</a></li>
+            <li>
+              <router-link to="/user/restaurantList">点餐大厅</router-link>
+            </li>
+            <li>
+              <router-link to="/user/orderList">我的订单</router-link>
+            </li>
+            <li>
+              <router-link to="/user/personalCenter">个人中心</router-link>
+            </li>
+            <li>
+              <router-link to="/guide">平台指南</router-link>
+            </li>
             <li id="last" style="float: right;min-width: 8%;">
-              <a id="signup" href="/signup">注册</a>
-              <a id="logout" v-on:click="logout" style="display: none">退出</a>
+              <router-link to="/signup" v-if="offline">注册</router-link>
+              <a id="logout" v-on:click="logout" v-else>退出</a>
             </li>
             <li id="secondLast" style="float: right;min-width: 8%;">
-              <a id="login" href="/login">登录</a>
-              <a id="logoff" v-on:click="logoff" style="display: none">注销</a>
+              <router-link to="/login" v-if="offline">登录</router-link>
+              <a id="logoff" v-on:click="logoff" v-else>注销</a>
             </li>
           </ul>
         </div>
@@ -34,16 +42,9 @@
     components: {Avatar},
     inject:['reload'],
     name: 'navi',
-    mounted: function () {
-      let token = localStorage.getItem('Authorization');
-
-      if (token !== 'null' || token !== ''){
-        $('#login').css("display","none");
-        $('#signup').css("display","none");
-        $('#logout').css("display","inherit");
-        $('#logoff').css("display","inherit");
-
-
+    data(){
+      return{
+        offline:localStorage.getItem("Authorization") !== "user"
       }
     },
     methods: {
