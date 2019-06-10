@@ -176,22 +176,22 @@
           return;
         }
         this.price=Number(this.price).toFixed(2);
-        this.$axios.post('/package/addPackage',{"rid": parseInt(localStorage.rid), "name": this.name, "price": this.price,  "description":this.description, "items":this.items}).then(
+        this.$axios.post('/package/addPackage',{"pid": this.pid, "rid": parseInt(localStorage.rid), "name": this.name, "price": this.price,  "description":this.description, "items":this.items}).then(
           res => {
             if(res.data===true){
               this.$message({
-                message: '添加成功',
+                message: '保存成功',
                 type: 'success'
               });
               this.$axios.post('/package/getPackages',{rid: localStorage.rid}).then(
                 res => {
-                  this.packages=data;
+                  this.packages=res.data;
                 }).catch(err => {
                 console.log(err)
               });
             }else {
               this.$message({
-                message: '同期存在同名套餐，添加失败',
+                message: '同期存在同名套餐，保存失败',
                 type: 'error'
               });
             }

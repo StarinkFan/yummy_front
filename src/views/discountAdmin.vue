@@ -45,7 +45,8 @@
       满：<el-input v-model="total" placeholder="请输入价格(整数)" maxlength="6" minlength="1" onkeyup="value=value.replace(/[^\d]/g,'')" style="display: inline-block; width: 80%" id=total :disabled="ifEdit"></el-input>
       <br>
       减：<el-input v-model="discount" placeholder="请输入折扣(整数)" maxlength="6" minlength="1" onkeyup="value=value.replace(/[^\d]/g,'')" style="display: inline-block; width: 80%; margin-top: 20px"></el-input>
-      <el-button round style="margin-top: 30px" @click="addDiscount">保存优惠</el-button>
+      <el-button round style="margin-top: 30px" @click="addDiscount">保存优惠</el-button><br>
+      <a style="padding-top: 10px;cursor: pointer" @click="clear" v-if="did >= 0">返回</a>
     </el-card>
   </div>
 </template>
@@ -83,8 +84,7 @@
           });
           return;
         }
-        this.price=Number(this.price).toFixed(2);
-        this.$axios.post('/discount/addDiscount',{"rid": parseInt(localStorage.rid), "total": this.total, "discount": this.discount}).then(
+        this.$axios.post('/discount/addDiscount',{did: this.did,"rid": parseInt(localStorage.rid), "total": parseInt(this.total), "discount": parseInt(this.discount)}).then(
           res => {
             if(res.data>0){
               this.$message({
@@ -103,7 +103,7 @@
               });
             }else if(res.data===-1){
               this.$message({
-                message: '有同满价格优惠，添加失败',
+                message: '有同满价格优惠，保存失败',
                 type: 'error'
               });
             }else if(res.data===-2){
@@ -113,7 +113,7 @@
               });
             }else{
               this.$message({
-                message: '添加失败',
+                message: '保存失败',
                 type: 'error'
               });
             }
@@ -150,7 +150,7 @@
       },
 
       checkSameDiscount(){
-        this.$axios.post('/discount/hasSameDiscount',{rid:localStorage.rid, did: this.did,total: this.total}).then(
+        this.$axios.post('/discount/hasSameDiscount',{did: this.did, rid:localStorage.rid, total: this.total}).then(
           res => {
             if(res.data===true){
               //$("#name").focus();

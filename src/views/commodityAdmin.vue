@@ -156,7 +156,7 @@
               res => {
                 if(res.data>0){
                   this.$message({
-                    message: '添加成功',
+                    message: '保存成功',
                     type: 'success'
                   });
                   this.$axios.post('/commodity/getCommodities',{rid: localStorage.rid}).then(
@@ -172,7 +172,7 @@
                   });
                 }else if(res.data===-2){
                   this.$message({
-                    message: '同期有重名商品，添加失败',
+                    message: '同期有重名商品，保存失败',
                     type: 'error'
                   });
                 }else{
