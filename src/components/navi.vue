@@ -15,16 +15,12 @@
             <li>
               <router-link to="/user/personalCenter">个人中心</router-link>
             </li>
-            <li>
-              <router-link to="/guide">平台指南</router-link>
-            </li>
-            <li id="last" style="float: right;min-width: 8%;">
+            <li id="last" style="float: right;min-width: 8%;;margin-right: 4%">
               <router-link to="/signup" v-if="offline">注册</router-link>
               <a id="logout" v-on:click="logout" v-else>退出</a>
             </li>
-            <li id="secondLast" style="float: right;min-width: 8%;">
+            <li id="secondLast" style="float: right;min-width: 8%">
               <router-link to="/login" v-if="offline">登录</router-link>
-              <a id="logoff" v-on:click="logoff" v-else>注销</a>
             </li>
           </ul>
         </div>
@@ -47,41 +43,47 @@
         offline:localStorage.getItem("Authorization") !== "user"
       }
     },
+    mounted(){
+      $("a").click(function(){
+        $("a").css("color", "white");
+        $(this).css("color", "dodgerblue");
+      })
+    },
     methods: {
       logout: function () {
         localStorage.removeItem('Authorization');
         this.$router.replace("/login");
       },
-      logoff: function () {
-        this.$confirm('此操作将永久注销账户, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '注销成功!'
-          });
-          localStorage.removeItem('Authorization');
-          this.$axios.post("/user/logoff",
-            {"uid":localStorage.uid}
-          ).then(res => {
-            let data=res.data;
-            if(data){
-              console.log("logout success")
-            }
-            this.$router.replace("/login");
-
-          }).catch(err => {
-            console.log(err)
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消注销'
-          });
-        });
-      }
+      // logoff: function () {
+      //   this.$confirm('此操作将永久注销账户, 是否继续?', '提示', {
+      //     confirmButtonText: '确定',
+      //     cancelButtonText: '取消',
+      //     type: 'warning'
+      //   }).then(() => {
+      //     this.$message({
+      //       type: 'success',
+      //       message: '注销成功!'
+      //     });
+      //     localStorage.removeItem('Authorization');
+      //     this.$axios.post("/user/logoff",
+      //       {"uid":localStorage.uid}
+      //     ).then(res => {
+      //       let data=res.data;
+      //       if(data){
+      //         console.log("logout success")
+      //       }
+      //       this.$router.replace("/login");
+      //
+      //     }).catch(err => {
+      //       console.log(err)
+      //     });
+      //   }).catch(() => {
+      //     this.$message({
+      //       type: 'info',
+      //       message: '已取消注销'
+      //     });
+      //   });
+      // }
 
     }
   }

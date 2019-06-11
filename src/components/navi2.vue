@@ -24,6 +24,12 @@
 <script>
   export default {
     name: 'navi2',
+    mounted(){
+      $("a").click(function(){
+        $("a").css("color", "white");
+        $(this).css("color", "dodgerblue");
+      })
+    },
     methods: {
       logout: function () {
         localStorage.removeItem('Authorization');

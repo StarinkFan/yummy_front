@@ -28,6 +28,12 @@
         localStorage.removeItem('Authorization');
         this.$router.replace("/login");
       },
+      mounted(){
+        $("a").click(function(){
+          $("a").css("color", "white");
+          $(this).css("color", "dodgerblue");
+        })
+      },
     }
   }
 </script>
