@@ -141,7 +141,8 @@
       });
       this.$axios.post('/package/getOptions',{rid: localStorage.rid}).then(
         res => {
-          this.options=this.validCommodities=res.data;
+          this.validCommodities=res.data;
+          this.options=JSON.parse(JSON.stringify(this.validCommodities));
         }).catch(err => {
         console.log(err)
       });
@@ -212,7 +213,8 @@
         this.selectedCommodity= {};
         this.items = [];
         this.num="1";
-        this.options=this.validCommodities;
+        console.log(this.validCommodities);
+        this.options=JSON.parse(JSON.stringify(this.validCommodities));
         this.ifEdit=false;
       },
       deleteRow: function(index, row) {
@@ -236,6 +238,7 @@
         });
       },
       checkDetail(index, row){
+        this.clear();
         this.name=row.name;
         this.pid=row.pid;
         this.price=row.price;
