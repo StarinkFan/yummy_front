@@ -56,7 +56,6 @@
     </el-card>
 
     <el-card style="margin-left: 5%; display: inline-block; width: 22%;padding: 20px; margin-top: 30px">
-      <p v-if="cid >= 0" style="color: lightgray;float: left">ID：{{cid}}</p>
       <div class="photoPart">
         <input type="file" class="photoChoose" id="photoChoose" accept="image/png,image/jpg,image/gif,image/JPEG" style="display: none;"/>
         <label for="photoChoose">
@@ -64,7 +63,7 @@
         </label>
         <p style="color: lightgray">点击上传商品照片</p>
       </div>
-      <el-input v-model="name" placeholder="请输入商品名" maxlength="10" minlength="2"@blur="checkSameName" id="name"></el-input>
+      <el-input v-model="name" placeholder="请输入商品名" maxlength="10" minlength="2"@blur="checkSameName" id="name" :disabled="ifEdit"></el-input>
       <p style="color: red; margin-bottom: -14px" v-show="hasSameName"><i  class="el-icon-error"></i>有同名商品，请修改名称！</p>
       <el-input v-model="price" placeholder="请输入价格" maxlength="8" minlength="1" onkeyup="value=value.replace(/[^\d.]/g, '').replace(/^\./g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')" style="margin-top: 20px"></el-input>
       <el-select v-model="kind" placeholder="请选择类型" style="margin-top: 20px">
@@ -118,7 +117,8 @@
             value: '其他',
             label: '其他'
           }],
-          hasSameName:false
+          hasSameName:false,
+          ifEdit:false
         }
       },
       mounted() {
@@ -193,6 +193,7 @@
             this.kind="";
             this.price="";
             this.description="";
+            this.ifEdit=false;
           },
         deleteRow: function(index, row) {
           this.$axios.post('/commodity/deleteCommodity',{cid: row.cid}).then(
@@ -263,6 +264,7 @@
             this.photoSrc=row.photo;
             this.kind=row.kind;
             this.description=row.description;
+            this.ifEdit=true;
         },
         checkSameName(){
           this.$axios.post('/commodity/hasSameName',{rid:localStorage.rid, cid: this.cid,name: this.name}).then(

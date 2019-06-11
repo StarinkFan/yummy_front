@@ -65,8 +65,7 @@
     </el-card>
 
     <el-card style="margin-left: 5%; display: inline-block; width: 22%;padding: 20px; margin-top: 30px">
-      <p v-if="pid >= 0" style="color: lightgray;float: left">ID：{{pid}}</p>
-      <el-input v-model="name" placeholder="请输入套餐名" maxlength="10" minlength="2"@blur="checkSameName" id="name"></el-input>
+      <el-input v-model="name" placeholder="请输入套餐名" maxlength="10" minlength="2"@blur="checkSameName" id="name" :disabled="ifEdit"></el-input>
       <p style="color: red; margin-bottom: -14px" v-show="hasSameName"><i  class="el-icon-error"></i>有同名套餐，请修改名称！</p>
       <el-input v-model="price" placeholder="请输入价格" maxlength="8" minlength="1" onkeyup="value=value.replace(/[^\d.]/g, '').replace(/^\./g, '').replace(/\.{2,}/g, '.').replace('.', '$#$').replace(/\./g, '').replace('$#$', '.')" style="margin-top: 20px"></el-input>
       <el-popover v-for="(item,name) in items" v-bind:key="name" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px; margin-top: 10px">
@@ -106,6 +105,7 @@
         photo:"",
         newItem:{},
         selectedCommodity: {},
+        validCommodities:{},
         num:"1",
         packages: [
           {
@@ -128,7 +128,8 @@
         ],
         items: [],
         options: [],
-        hasSameName:false
+        hasSameName:false,
+        ifEdit:false
       }
     },
     mounted() {
@@ -140,7 +141,7 @@
       });
       this.$axios.post('/package/getOptions',{rid: localStorage.rid}).then(
         res => {
-          this.options=res.data;
+          this.options=this.validCommodities=res.data;
         }).catch(err => {
         console.log(err)
       });
@@ -156,6 +157,7 @@
         this.newItem.photo=this.selectedCommodity.photo;
         this.newItem.description=this.selectedCommodity.description;
         this.items.push(this.newItem);
+        this.removeContainedOptions([this.newItem]);
       },
 
       deleteItem(name){
@@ -210,6 +212,8 @@
         this.selectedCommodity= {};
         this.items = [];
         this.num="1";
+        this.options=this.validCommodities;
+        this.ifEdit=false;
       },
       deleteRow: function(index, row) {
         this.$axios.post('/package/deletePackage',{pid: row.pid}).then(
@@ -238,6 +242,8 @@
         this.photo=row.photo;
         this.description=row.description;
         this.items=row.items;
+        this.ifEdit=true;
+        this.removeContainedOptions(this.items);
       },
       checkSameName(){
         this.$axios.post('/package/hasSameName',{rid:localStorage.rid, pid: this.pid,name: this.name}).then(
@@ -295,7 +301,15 @@
           console.log(err)
         });
       },
-
+      removeContainedOptions(items){
+        for(let item of items){
+          for(let i=0;i<this.options.length;i++){
+            if(item.name===this.options[i].name){
+              this.options.splice(i, 1);
+            }
+          }
+        }
+      }
 
     }
   }
