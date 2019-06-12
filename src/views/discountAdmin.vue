@@ -6,6 +6,7 @@
         :data="discounts"
         stripe
         height="500"
+        id="discountList"
         style="overflow-x: hidden">
         <el-table-column
           fixed
@@ -217,5 +218,8 @@
 </script>
 
 <style scoped>
-
+  #discountList ::-webkit-scrollbar {
+    width: 30px;
+    background-color: transparent;
+  }
 </style>

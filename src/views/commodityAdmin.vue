@@ -6,6 +6,7 @@
         :data="commodities"
         stripe
         height="540"
+        id="commodityList"
         style="overflow-x: hidden">
         <el-table-column
           fixed
@@ -360,5 +361,10 @@
     width: 90px;
     height: 90px;
     cursor: pointer;
+  }
+
+  #commodityList ::-webkit-scrollbar {
+    width: 30px;
+    background-color: transparent;
   }
 </style>

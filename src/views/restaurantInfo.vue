@@ -3,7 +3,7 @@
     <div slot="header" class="clearfix" style="padding-bottom:16px;border-bottom: 1px solid #ebeef5">
       <h4>餐厅信息</h4>
       <el-tag type="info" style="float: right; margin-top: -8px" v-if="hasModification">修改申请审核中</el-tag>
-      <a href="/restaurant/restaurantCenter/editRestaurantInfo" v-else><el-button style="float: right; padding: 3px 0" type="text">修改</el-button></a>
+      <router-link to="/restaurant/restaurantCenter/editRestaurantInfo" v-else><el-button style="float: right; padding: 3px 0" type="text">修改</el-button></router-link>
     </div>
     <div style="padding-left: 5%;font-size: 16px;margin-top: 50px">
       <p>名称：{{info.name}}</p><br>
@@ -109,5 +109,9 @@
   #certificate{
     width: 400px;
     height: 250px;
+  }
+
+  p{
+    line-height: 16px;
   }
 </style>

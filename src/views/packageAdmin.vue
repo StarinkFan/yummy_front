@@ -6,6 +6,7 @@
         :data="packages"
         stripe
         height="500"
+        id="packageList"
         style="overflow-x: hidden">
         <el-table-column
           fixed
@@ -136,6 +137,7 @@
       this.$axios.post('/package/getPackages',{rid: localStorage.rid}).then(
         res => {
           this.packages=res.data;
+          console.log(this.packages);
         }).catch(err => {
         console.log(err)
       });
@@ -319,5 +321,8 @@
 </script>
 
 <style scoped>
-
+  #packageList ::-webkit-scrollbar {
+    width: 30px;
+    background-color: transparent;
+  }
 </style>
