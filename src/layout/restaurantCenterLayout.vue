@@ -18,8 +18,8 @@
 
 <style scoped>
   .mainBody{
-    width: 52%;
-    margin-left: 12%;
+    width: 56%;
+    margin-left: 8%;
     min-height: 580px;
     padding-bottom: 50px;
     display: inline-block;

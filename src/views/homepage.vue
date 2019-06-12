@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%;text-align: center">
-    <img src="/static/pic/logo.png" style="width:20%;left: 40%;position:absolute;top:200px;" align=center>
+    <img src="/static/pic/logo_yellow.png" style="width:20%;left: 40%;position:absolute;top:200px;" align=center>
     <el-carousel style="width: 100%;min-height: 725px;z-index: -1">
       <el-carousel-item v-for="homePic in homePics" :key="item" style="min-height: 725px">
         <img :src="homePic" style="width: 100%;height: 100%;"/>
@@ -30,8 +30,9 @@
       },
       methods:{
           orderNow(){
-            if(store.getters.isLogin){
-              this.$router.push('/restaurantList');
+            console.log(localStorage.getItem('Authorization'));
+            if(localStorage.getItem('Authorization')){
+              this.$router.push('/user/restaurantList');
             }else{
               this.$router.push('/login')
             }

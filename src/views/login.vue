@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <a href='/'><img src="/static/pic/logo.png" style="width:15%;position:absolute;top:35px;left: 7%;" align=center></a><br>
+    <a href='/'><img src="/static/pic/logo_yellow.png" style="width:15%;position:absolute;top:35px;left: 7%;" align=center></a><br>
     <div class="mainbox">
       <el-card class="box-card loginbody">
         <h3 style="float: top;" align="center">登录</h3>
@@ -11,7 +11,7 @@
         <a href="/findPassword" style="float: right;margin-right: 8%;display: inline;margin-top: 3%">忘记密码？</a>
         <el-button type="primary" id="login" v-on:click="login()" round>登录</el-button>
         <div style="width: 100%;text-align: center;margin-top: 20px">
-          <a href="/signup" style="font-size: 16px;color: lightskyblue;">即刻注册</a>
+          <a href="/signup" style="font-size: 16px;">即刻注册</a>
         </div>
       </el-card>
 
@@ -40,9 +40,7 @@
   export default {
       name: "login",
       mounted() {
-        store.commit(types.LOGOUT)
         if(store.getters.isRemember) {
-          console.log("wocao");
           this.email =localStorage.email;
           this.password = window.atob(localStorage.password);
           this.remember = true;
@@ -81,7 +79,6 @@
                     message: '经理登录成功',
                     type: 'success'
                   });
-                  console.log(localStorage.Authorization);
                   self.$router.replace('/manager/applyAdmin');
                   break;
                 case 0:

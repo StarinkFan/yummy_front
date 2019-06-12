@@ -1,5 +1,5 @@
 <template>
-<div style="display: flex; width: 90%; margin-left: 5%; justify-content: space-around; margin-top: 50px; margin-bottom: 70px">
+<div style="display: flex; width: 84%; margin-left: 8%; justify-content: space-between; margin-top: 50px; margin-bottom: 70px">
   <el-menu
     @select="filter"
     class="el-menu-vertical-demo" style="width: 20%; max-height: 200px">
@@ -19,7 +19,7 @@
       <span slot="title">已退款</span>
     </el-menu-item></a>
   </el-menu>
-  <el-card class="box-card mainBody">
+  <el-card class="box-card mainBody" style="width: 70%">
     <el-table
       :data="selectedOrders"
       stripe

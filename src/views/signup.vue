@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <a href='/'><img src="/static/pic/logo.png" style="width:15%;position:absolute;top:35px;left: 8%;" align=center></a><br>
+    <a href='/'><img src="/static/pic/logo_yellow.png" style="width:15%;position:absolute;top:35px;left: 8%;" align=center></a><br>
     <div class="mainbox">
       <div class="mainbody">
         <h3 style="color: white;float: top;" align="center">注册</h3>

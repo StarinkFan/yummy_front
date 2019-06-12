@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; width: 90%; margin-left: 5%; justify-content: space-around; margin-top: 50px; margin-bottom: 70px">
+  <div style="display: flex; width: 84%; margin-left: 8%; justify-content: space-between; margin-top: 50px; margin-bottom: 70px">
     <el-menu
       @select="filter"
       class="el-menu-vertical-demo" style="width: 20%; max-height: 200px">
@@ -19,12 +19,12 @@
         <span slot="title">已退款</span>
       </el-menu-item></a>
     </el-menu>
-    <el-card class="box-card mainBody">
+    <el-card class="box-card mainBody" style="width: 70%">
       <el-table
         :data="selectedOrders"
         stripe
         height="500"
-        style="overflow-x: hidden">
+        style="overflow-x: hidden;">
         <el-table-column
           fixed
           label="订单编号"
@@ -34,18 +34,18 @@
         <el-table-column
           fixed
           label="客户名称"
+          width="120"
           prop="uname">
         </el-table-column>
         <el-table-column
           fixed
           label="创建时间"
-          width="100"
           prop="createTime">
         </el-table-column>
         <el-table-column
           fixed
           label="金额"
-          width="80"
+          width="100"
           prop="pay">
         </el-table-column>
         <el-table-column

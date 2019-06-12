@@ -1,6 +1,6 @@
 <template>
   <div class="whole" id="navi" style="width:100%;">
-    <a href="/"><img src="/static/pic/logo.png" id="naviLogo" class="img-responsive logo" alt="Cinque Terre"></a>
+    <a href="/"><img src="/static/pic/logo_yellow.png" id="naviLogo" class="img-responsive logo" alt="Cinque Terre"></a>
 
     <nav class="navbar navbar-inverse wholeNav">
       <div class="container-fluid" style="width: 100%">
@@ -27,7 +27,7 @@
     mounted(){
       $("a").click(function(){
         $("a").css("color", "white");
-        $(this).css("color", "dodgerblue");
+        $(this).css("color", "#ffffa0");
       })
     },
     methods: {
@@ -44,7 +44,7 @@
 <style scoped>
   .whole{
     padding: 0;
-    background-color: black;
+    background-color: darkorange;
     z-index: 2;
   }
   .wholeNav{
@@ -55,7 +55,7 @@
     min-height: 30px;
     margin-top: 5px;
     margin-bottom: 0;
-    background-color: black;
+    background-color: darkorange;
   }
 </style>
 
@@ -74,11 +74,11 @@
     border-bottom:3px solid transparent;
   }
   #nav li:hover{
-    border-top:3px solid dodgerblue;
-    border-bottom:3px solid dodgerblue;
+    border-top:3px solid #ffffa0;
+    border-bottom:3px solid #ffffa0;
   }
   #nav li:hover a{
-    color:dodgerblue;
+    color:#ffffa0;
   }
   #nav li a{
     color: white;

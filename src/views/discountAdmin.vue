@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%;text-align: center">
-    <h1 style="color: lightskyblue; margin-top: 50px">优惠管理</h1>
-    <el-card class="box-card" style="width: 50%; vertical-align: top;display: inline-block; min-height: 500px; margin-top: 30px;margin-bottom: 30px">
+    <h1 style="margin-top: 50px">优惠管理</h1>
+    <el-card class="box-card" style="width: 56%; vertical-align: top;display: inline-block; min-height: 500px; margin-top: 30px;margin-bottom: 30px">
       <el-table
         :data="discounts"
         stripe
@@ -41,7 +41,7 @@
       </el-table>
     </el-card>
 
-    <el-card style="margin-left: 11%; display: inline-block; width: 22%;padding: 20px; margin-top: 30px">
+    <el-card style="margin-left: 5%; display: inline-block; width: 22%;padding: 20px; margin-top: 30px">
       满：<el-input v-model="total" placeholder="请输入价格(整数)" maxlength="6" minlength="1" onkeyup="value=value.replace(/[^\d]/g,'')" style="display: inline-block; width: 80%" id=total :disabled="ifEdit"></el-input>
       <br>
       减：<el-input v-model="discount" placeholder="请输入折扣(整数)" maxlength="6" minlength="1" onkeyup="value=value.replace(/[^\d]/g,'')" style="display: inline-block; width: 80%; margin-top: 20px"></el-input>

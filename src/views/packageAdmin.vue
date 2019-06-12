@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%;text-align: center">
-    <h1 style="color: lightskyblue; margin-top: 50px">套餐管理</h1>
+    <h1 style="margin-top: 50px">套餐管理</h1>
     <el-card class="box-card" style="width: 56%; vertical-align: top;display: inline-block; min-height: 500px; margin-top: 30px;margin-bottom: 30px">
       <el-table
         :data="packages"
