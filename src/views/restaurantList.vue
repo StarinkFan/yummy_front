@@ -3,7 +3,7 @@
     <div style="display: flex; width: 83%; justify-content: space-between; align-items: center; margin-top: 30px">
       <div>
         <p style="display: inline-block"><i class="el-icon-location-information"></i>  {{location}}</p>
-        <a style="display: inline-block;cursor: pointer;color: darkorange">[切换地址]</a>
+        <span style="display: inline-block;cursor: pointer;color: darkorange">[切换地址]</span>
       </div>
     </div>
     <el-card style="width: 83%;margin-top: 20px">
@@ -23,15 +23,31 @@
         </el-input>
       </div>
     </el-card>
-    <el-card style="width: 83%;margin-top: 20px;min-height: 500px; margin-bottom: 80px">
-
+    <el-card style="width: 83%;margin-top: 20px;min-height: 500px; margin-bottom: 80px; ">
+      <div style="display: flex; justify-content: space-between;width: 100%;flex-wrap: wrap">
+        <restaurantCard
+          v-for="(item,index) in restaurants"
+          v-bind:key="index"
+          :photo="item.photo"
+          :name="item.name"
+          :rid="item.rid"
+          :kind="item.kind"
+          :distance="item.distance"
+          :time="item.time"
+        >
+        </restaurantCard>
+      </div>
+      <div style="width: 100%; text-align: center; cursor: pointer">点击加载更多商家</div>
     </el-card>
   </div>
 </template>
 
 <script>
+  import restaurantCard from '../components/restaurantCard'
+
     export default {
         name: "restaurantList",
+      components:{restaurantCard},
       data(){
         return{
           restaurants: [
@@ -67,6 +83,9 @@
                   break;
               }
             }
+            for(let i=0;i<10;i++){
+              res.data.push({});
+            }
             this.restaurants=data;
 
           }).catch(err => {
@@ -74,9 +93,7 @@
         });
       },
       methods:{
-        checkRestaurant(row){
-          this.$router.push({name:"restaurantDetail", params: {rid: row.rid}});
-        },
+
       }
     }
 </script>
