@@ -15,7 +15,7 @@
             <li>
               <router-link to="/user/personalCenter">个人中心</router-link>
             </li>
-            <li id="last" style="float: right;min-width: 8%;;margin-right: 4%">
+            <li id="last" style="float: right;min-width: 8%;margin-right: 1%">
               <router-link to="/signup" v-if="offline">注册</router-link>
               <a id="logout" v-on:click="logout" v-else>退出</a>
             </li>

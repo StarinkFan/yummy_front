@@ -1,52 +1,31 @@
 <template>
-  <div style="width: 60%;margin-left: 20%;text-align: center">
-    <h1 style="color: lightskyblue; margin-top: 30px; margin-bottom: 30px">餐厅列表</h1>
-    <el-table
-      :data="restaurants"
-      border
-      stripe>
-      <el-table-column
-        fixed
-        label="头像"
-        width="150">
-        <template slot-scope="scope">
-          <img :src="scope.row.photo" style="width:100%;height: auto"/>
-        </template>
-      </el-table-column>
-      <el-table-column
-        fixed
-        label="名称"
-        prop="name"
-        width="150">
-      </el-table-column>
-      <el-table-column
-        fixed
-        label="类型"
-        width="80">
-        <template slot-scope="scope">
-          <el-tag type="info">{{scope.row.kind}}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        fixed
-        label="地点"
-        prop="location">
-      </el-table-column>
-      <el-table-column
-        fixed
-        label="城市"
-        prop="region"
-        width="80">
-      </el-table-column>
-      <el-table-column
-        fixed
-        label="操作"
-        width="100">
-        <template slot-scope="scope">
-          <el-button @click="checkRestaurant(scope.row)" type="text" size="small">进店</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+  <div style="width: 100%;display: flex;justify-content: center;flex-wrap: wrap;">
+    <div style="display: flex; width: 83%; justify-content: space-between; align-items: center; margin-top: 30px">
+      <div>
+        <p style="display: inline-block"><i class="el-icon-location-information"></i>  {{location}}</p>
+        <a style="display: inline-block;cursor: pointer;color: darkorange">[切换地址]</a>
+      </div>
+    </div>
+    <el-card style="width: 83%;margin-top: 20px">
+      <div style="display: flex; background-color: white; justify-content: space-between; align-items: center;">
+        <div id="kindSelector">
+          <li style="color: lightgrey">商家分类 :   </li>
+          <li style="color: darkorange">全部</li>
+          <li>中餐</li>
+          <li>西餐</li>
+          <li>快餐</li>
+          <li>甜品</li>
+          <li>小吃</li>
+          <li>其他</li>
+        </div>
+        <el-input placeholder="搜索商家、美食" v-model="searchContent" class="input-with-select" style="width: 320px;">
+          <el-button slot="append" icon="el-icon-search"></el-button>
+        </el-input>
+      </div>
+    </el-card>
+    <el-card style="width: 83%;margin-top: 20px;min-height: 500px; margin-bottom: 80px">
+
+    </el-card>
   </div>
 </template>
 
@@ -57,7 +36,9 @@
         return{
           restaurants: [
 
-          ]
+          ],
+          location:"南京大学鼓楼校区",
+          searchContent:""
         }
       },
       mounted() {
@@ -95,11 +76,17 @@
       methods:{
         checkRestaurant(row){
           this.$router.push({name:"restaurantDetail", params: {rid: row.rid}});
-        }
+        },
       }
     }
 </script>
 
 <style scoped>
+#kindSelector li{
+  display: inline-block;
+  width: 80px;
+  text-align: left;
+  cursor: pointer;
+}
 
 </style>
