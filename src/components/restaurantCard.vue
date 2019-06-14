@@ -4,8 +4,8 @@
     <h5>{{name}}</h5>
     <div id="detail" style="width: 100%;height: 13px">
       <p>类型：{{kind}}</p>
-      <p>{{distance}}km</p>
-      <p>{{time}}min</p>
+      <p><i class="el-icon-location-information"></i>{{distance}}km</p>
+      <p><i class="el-icon-time"></i>{{time}}min</p>
     </div>
   </div>
 </template>

@@ -5,6 +5,9 @@
         <p style="display: inline-block"><i class="el-icon-location-information"></i>  {{location}}</p>
         <span style="display: inline-block;cursor: pointer;color: darkorange">[切换地址]</span>
       </div>
+      <div>
+        <span style="color: dodgerblue;cursor: pointer">新增地址</span>
+      </div>
     </div>
     <el-card style="width: 83%;margin-top: 20px">
       <div style="display: flex; background-color: white; justify-content: space-between; align-items: center;">
@@ -83,9 +86,9 @@
                   break;
               }
             }
-            for(let i=0;i<10;i++){
-              res.data.push({});
-            }
+            // for(let i=0;i<10;i++){
+            //   res.data.push({});
+            // }
             this.restaurants=data;
 
           }).catch(err => {

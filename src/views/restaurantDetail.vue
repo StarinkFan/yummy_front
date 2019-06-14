@@ -1,24 +1,42 @@
 <template>
-  <div style="width: 100%;text-align: center; margin-bottom: 50px">
-    <div style="width: 50%;margin-left: 25%">
-      <h1 style="color: lightskyblue;margin-bottom: 20px">商品列表</h1>
-      <h4>欢迎光临 <strong>{{name}}</strong></h4>
-      <p style="display: inline-block;margin-right: 30px">类型：{{kind}}</p>
-      <p style="display: inline-block">地址：{{location}}</p>
-      <p style="display: inline-block; margin-left: 10px"><i class="el-icon-location-information"></i> {{distance}}km,{{time}}min</p>
-      <el-select v-model="target" placeholder="请选择收货地址" style="margin-top: 10px; width:60%;margin-bottom: 20px">
-        <el-option
-          v-for="item in targets"
-          :key="item.location"
-          :value="item.location">
-        </el-option>
-      </el-select>
-      <a style="margin-left: 10px;cursor: pointer" @click="showLocationCard">新增收货地址</a><br>
-      <el-tag v-for="item in discounts" :key="item.did" style="margin-right: 10px">满{{item.total}}减{{item.discount}}</el-tag>
+  <div style="width: 100%;display: flex;flex-wrap: wrap; justify-content: center; margin-bottom: 50px;text-align: center ">
+    <div style="display: flex; width: 83%; justify-content: space-between; align-items: center; margin-top: 30px">
+      <div>
+        <p style="display: inline-block"><i class="el-icon-location-information"></i>  {{location}}</p>
+        <span style="display: inline-block;cursor: pointer;color: darkorange">[切换地址]</span>
+      </div>
+      <div>
+        <span style="color: dodgerblue;cursor: pointer">新增地址</span>
+      </div>
     </div>
+    <el-card style="width: 83%;margin-top: 20px">
+      <div style="display: flex; background-color: white; justify-content: space-between; align-items: center;">
+        <div style="display: flex; justify-content: left">
+          <div>
+            <img :src="photo" id="photo"/>
+          </div>
+          <div style="margin-left: 10px; font-size: 12px;color: grey">
+            <h4><b>{{name}}</b></h4>
+            <p style="margin-top: 10px; margin-bottom: 5px">类型：{{kind}}</p>
+            <p style="margin-bottom: 0; padding-bottom: 0">地址：{{location}}</p>
+          </div>
+        </div>
+        <div>
+          <p>餐厅距离</p>
+          <h5>{{distance}}</h5>km
+        </div>
+        <div>
+          <p>预计送达时间</p>
+          <h5>{{time}}</h5>min
+        </div>
+        <div style="display: flex; flex-wrap: wrap; max-width: 200px">
+          <el-tag v-for="item in discounts" :key="item.did" style="display: block; margin: 5px">满{{item.total}}减{{item.discount}}</el-tag>
+        </div>
+      </div>
+    </el-card>
 
-    <div style="width: 100%; text-align: left">
-      <div style="width: 20%; margin-left:9%;display: inline-block;margin-top: 50px;vertical-align: top">
+    <div style="width: 83%; margin-top:50px; text-align: left; display: flex; justify-content: space-between; align-items: flex-start">
+      <div style="width: 22%">
         <el-menu class="el-menu-vertical-demo" default-active="1" @select="changeNaviIndex">
           <el-menu-item index="1">
             <i class="el-icon-goods"></i>
@@ -32,51 +50,6 @@
       </div>
 
       <el-card class="box-card main">
-        <el-table
-          :data="commodities"
-          stripe
-          height="500"
-          style="overflow-x: hidden"
-          class="list"
-          v-show="naviIndex === 1">
-          <el-table-column
-            fixed
-            label="名称"
-            prop="name">
-          </el-table-column>
-          <el-table-column
-            fixed
-            label="单价"
-            width="80"
-            prop="price">
-          </el-table-column>
-          <el-table-column
-            fixed
-            label="类型"
-            width="80"
-            prop="kind">
-          </el-table-column>
-          <el-table-column
-            fixed
-            label="数量"
-            width="80"
-            prop="amount">
-          </el-table-column>
-          <el-table-column
-            fixed
-            label="已售"
-            width="80"
-            prop="sold">
-          </el-table-column>
-          <el-table-column
-            fixed
-            label="购买数量">
-            <template slot-scope="scope">
-              <el-input-number v-model="scope.row.num" :min="0" :max="20" label="描述文字" style="width: 100%"></el-input-number>
-            </template>
-          </el-table-column>
-        </el-table>
-
         <el-table
           :data="packages"
           stripe
@@ -285,13 +258,9 @@
 
 <style scoped>
 .main{
-  width: 50%;
-  vertical-align: top;
-  display: inline-block;
+  width: 63%;
   min-height: 500px;
-  margin-top: 30px;
   margin-bottom: 60px;
-  margin-left: 12%;
   padding: 5px;
 }
 
@@ -314,5 +283,20 @@
     width: 50%;
     z-index: 30;
     left: 25%
+  }
+
+#photo{
+  width: 100px;
+  height: 80px;
+}
+
+  h4{
+    color: darkorange;
+    margin-top: 10px;
+  }
+
+  h5{
+    display:inline-block;
+    font-size: 22px;
   }
 </style>
