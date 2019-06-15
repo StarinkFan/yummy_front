@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%;padding: 30px">
+  <div style="width: 100%;padding: 20px">
     <div class="block" style="width: 100%; display: flex; align-items: center; justify-content: space-between">
       <span class="demonstration" style="font-size: 14px;">省份/城市/地区</span>
       <el-cascader
@@ -78,7 +78,7 @@
             region=this.selectedArea[0];
           }
           location=location+value;
-          this.$parent.addressSelected(location, region);
+          this.$emit('addressSelected',location, region);
         },
 
         handleAreaSelect(value) {

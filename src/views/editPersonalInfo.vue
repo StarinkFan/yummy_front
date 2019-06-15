@@ -29,7 +29,7 @@
         </el-table-column>
       </el-table>
       <p style="font-size: 14px;margin-left: 10px;margin-top: 10px">新增地址:</p>
-      <location-selector></location-selector>
+      <location-selector @addressSelected="addressSelected(arguments)"></location-selector>
     </div>
   </div>
 </template>
@@ -89,14 +89,14 @@
           console.log(index);
           this.info.addresses.splice(index,1);
         },
-        addressSelected(location, region) {
-          if(this.find(location)>=0){
+        addressSelected(msg) {
+          if(this.find(msg[0])>=0){
             this.$message({
               message: "请勿重复添加",
               type: "error"
             });
           }else{
-            this.info.addresses.push({tid:0,uid: parseInt(localStorage.uid),location:location, region: region});
+            this.info.addresses.push({tid:0,uid: parseInt(localStorage.uid),location:msg[0], region: msg[1]});
           }
 
         },

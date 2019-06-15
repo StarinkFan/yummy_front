@@ -18,7 +18,7 @@
         </el-select>
       </p><br>
       <p>地址：</p>
-      <location-selector ref="loc"></location-selector>
+      <location-selector ref="loc" @addressSelected="addressSelected(arguments)"></location-selector>
       <pics-uploader ref="pics"></pics-uploader>
 
     </div>
@@ -120,9 +120,9 @@
 
     },
     methods:{
-      addressSelected(location, region) {
-        this.location=location;
-        this.region=region;
+      addressSelected(msg) {
+        this.location=msg[0];
+        this.region=msg[1];
       },
       applyForModification(){
         if(this.name.length<2||this.name.length>15){

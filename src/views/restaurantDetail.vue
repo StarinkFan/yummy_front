@@ -6,7 +6,7 @@
         <span style="display: inline-block;cursor: pointer;color: darkorange">[切换地址]</span>
       </div>
       <div>
-        <span style="color: dodgerblue;cursor: pointer">新增地址</span>
+        <span style="color: dodgerblue;cursor: pointer" @click="showLocationCard">新增地址</span>
       </div>
     </div>
     <el-card style="width: 83%;margin-top: 20px">
@@ -47,6 +47,7 @@
             <span slot="title">套餐列表</span>
           </el-menu-item>
         </el-menu>
+
       </div>
 
       <el-card class="box-card main">
@@ -102,12 +103,18 @@
 
     <div id="cover"></div>
     <el-card id="locationCard">
-      <location-selector></location-selector>
+      <h4 style="font-size: 20px"><b>添加新地址</b></h4>
+      <location-selector @addressSelected="addressSelected"></location-selector>
       <div style="display: flex; justify-content: space-around">
         <el-button style="width: 150px" round>添  加</el-button>
         <el-button style="width: 150px" @click="hideLocationCard" round>取  消</el-button>
       </div>
     </el-card>
+
+    <div id="shoppingCart">
+
+    </div>
+
   </div>
 
 </template>
@@ -240,15 +247,15 @@
         },
         showLocationCard(){
           $("#cover").css("display", "inherit");
-          $("#locationCard").css("display", "inherit");
+          $("#locationCard").css("display", "flex");
         },
         hideLocationCard(){
           $("#cover").css("display", "none");
           $("#locationCard").css("display", "none");
         },
-        addressSelected(location, region){
-            this.newRegion=region;
-            this.newLocation=location;
+        addressSelected(msg){
+            this.newRegion=msg[1];
+            this.newLocation=msg[0];
         }
       }
 
@@ -280,9 +287,10 @@
     display: none;
     position: fixed;
     top:200px;
-    width: 50%;
+    width: 40%;
     z-index: 30;
-    left: 25%
+    left: 30%;
+    justify-content: center;
   }
 
 #photo{
@@ -298,5 +306,16 @@
   h5{
     display:inline-block;
     font-size: 22px;
+  }
+
+  #shoppingCart{
+    width: 25%;
+    position: fixed;
+    left: 9%;
+    bottom: 0;
+    background-color: black;
+    max-height: 400px;
+    height: 100px;
+    z-index: 20;
   }
 </style>

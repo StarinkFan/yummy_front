@@ -6,7 +6,7 @@
         <span style="display: inline-block;cursor: pointer;color: darkorange">[切换地址]</span>
       </div>
       <div>
-        <span style="color: dodgerblue;cursor: pointer">新增地址</span>
+        <span style="color: dodgerblue;cursor: pointer" @click="showLocationCard">新增地址</span>
       </div>
     </div>
     <el-card style="width: 83%;margin-top: 20px">
@@ -42,22 +42,34 @@
       </div>
       <div style="width: 100%; text-align: center; cursor: pointer">点击加载更多商家</div>
     </el-card>
+    <div id="cover"></div>
+    <el-card id="locationCard">
+      <h4 style="font-size: 20px"><b>添加新地址</b></h4>
+      <location-selector @addressSelected="addressSelected(arguments)"></location-selector>
+      <div style="display: flex; justify-content: space-around">
+        <el-button style="width: 150px" :disabled="newLocation === '' " round>添  加</el-button>
+        <el-button style="width: 150px" @click="hideLocationCard" round>取  消</el-button>
+      </div>
+    </el-card>
   </div>
 </template>
 
 <script>
   import restaurantCard from '../components/restaurantCard'
+  import locationSelector from '@/components/locationSelector.vue'
 
     export default {
         name: "restaurantList",
-      components:{restaurantCard},
+      components:{restaurantCard,locationSelector},
       data(){
         return{
           restaurants: [
 
           ],
           location:"南京大学鼓楼校区",
-          searchContent:""
+          searchContent:"",
+          newRegion:"全国",
+          newLocation:""
         }
       },
       mounted() {
@@ -96,7 +108,18 @@
         });
       },
       methods:{
-
+        showLocationCard(){
+          $("#cover").css("display", "inherit");
+          $("#locationCard").css("display", "flex");
+        },
+        hideLocationCard(){
+          $("#cover").css("display", "none");
+          $("#locationCard").css("display", "none");
+        },
+        addressSelected(msg){
+          this.newRegion=msg[1];
+          this.newLocation=msg[0];
+        }
       }
     }
 </script>
@@ -107,6 +130,28 @@
   width: 80px;
   text-align: left;
   cursor: pointer;
+}
+
+#cover {
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  position: fixed;
+  top: 0;
+  background-color: black;
+  opacity: 0.5;
+  display: none;
+  text-align: center;
+}
+
+#locationCard{
+  display: none;
+  position: fixed;
+  top:200px;
+  width: 40%;
+  z-index: 30;
+  left: 30%;
+  justify-content: center;
 }
 
 </style>
