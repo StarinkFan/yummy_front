@@ -2,7 +2,7 @@
   <div style="width: 100%;display: flex;flex-wrap: wrap; justify-content: center; margin-bottom: 50px;text-align: center ">
     <div style="display: flex; width: 83%; justify-content: space-between; align-items: center; margin-top: 30px">
       <div>
-        <p style="display: inline-block"><i class="el-icon-location-information"></i>  {{location}}</p>
+        <p style="display: inline-block"><i class="el-icon-location-information"></i>  {{userLocation}}</p>
         <span style="display: inline-block;cursor: pointer;color: darkorange">[切换地址]</span>
       </div>
       <div>
@@ -140,6 +140,7 @@
             targets:[],
             distance: 1.0,
             time: 15,
+            userLocation:"江苏省南京市鼓楼区南京大学（鼓楼校区）",
             newRegion:"全国",
             newLocation:""
           }
