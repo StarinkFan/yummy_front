@@ -75,6 +75,7 @@
             label="包含商品">
             <template slot-scope="scope">
               <el-popover v-for="(item,index) in scope.row.items" :key="index" trigger="hover" placement="top" style="display: inline-block; margin-right: 2px">
+                <img :src="item.photo" style="width: 120px; height: 120px"/>
                 <p>名称: {{ item.name }}</p>
                 <p>单价: {{ item.price }}</p>
                 <p>类型: {{ item.kind }}</p>

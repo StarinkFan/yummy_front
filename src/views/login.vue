@@ -62,6 +62,11 @@
                     type: 'success'
                   });
                   localStorage.uid=res.data.uid;
+                  this.$axios.post("/user/getInfo", {"uid":localStorage.uid}).then(res => {
+                    let data2=res.data;
+                    //console.log(data2.addresses[0].location);
+                    localStorage.location=data2.addresses[0].location;
+                  });
                   self.$router.replace('/user/restaurantList');
                   break;
                 case 2:
@@ -123,7 +128,7 @@
   }
 
   .mainbox{
-    margin-top: 150px;
+    margin-top: 120px;
     height: 330px;
   }
 

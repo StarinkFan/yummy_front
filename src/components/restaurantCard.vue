@@ -41,7 +41,7 @@
       },
       methods:{
         checkRestaurant(){
-          this.$router.push({name:"restaurantDetail", params: {rid: this.rid}});
+          this.$router.push({name:"restaurantDetail", params: {rid: this.rid+""}});
         },
       }
 
