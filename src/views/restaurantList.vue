@@ -38,7 +38,7 @@
           :rid="item.rid"
           :kind="item.kind"
           :distance="item.distance"
-          :time="item.time"
+          :time="item.time+10"
         >
         </restaurantCard>
       </div>
@@ -55,7 +55,7 @@
       </div>
     </el-card>
     <el-card id="changeLocationCard">
-      <h4 style="font-size: 20px"><b>切换地址</b></h4>
+      <h4 style="font-size: 20px;margin-left: -100px;"><b>切换地址</b></h4>
       <label v-for="(item,index) in addresses" :key="index"  id="cLocation">
         <input @click="getRadioVal(item.location)" type="radio" name="type" :value="item.location">{{item.location}}
       </label>
@@ -101,6 +101,9 @@
       },
       changeL(){
         this.location=this.selectLocation;
+        localStorage.location=this.location;
+        console.log(localStorage);
+        this.showRestaurantList();
         $("#cover").css("display", "none");
         $("#changeLocationCard").css("display", "none");
       }    ,
@@ -109,6 +112,7 @@
           let data2=res.data;
           this.addresses=[];
           this.addresses=data2.addresses;
+
         });
         console.log(this.addresses);
         $("#cover").css("display", "inherit");
@@ -141,7 +145,7 @@
         console.log(this.searchContent+" "+localStorage.location+" "+this.restaurantKind);
         this.restaurantKind="0";
         this.showRestaurantList();
-        this.searchContent="";
+        //this.searchContent="";
       },
       selectRKind(item,i){
         this.restaurantKind=i;
@@ -166,6 +170,7 @@
         //this.$axios.get('/restaurant/getRestaurantList').then(
         this.$axios.post('/restaurant/getRestaurantList',{location: localStorage.location,rKind:this.restaurantKind,searchContent:this.searchContent}).then(
           res => {
+            console.log(res);
             this.location=localStorage.location;
             localStorage.rLength=10;
             console.log(localStorage);
@@ -258,6 +263,7 @@
   }
   #cLocation{
     display: flex;
+    font-weight:normal;
   }
 
 </style>
