@@ -413,7 +413,7 @@
           saveCart(){
             //console.log(this.commodities);
             //console.log(this.packages);
-            his.$axios.post("cart/ChangeCart", {uid:localStorage.uid,rid:this.rid,commodities:this.commodities,packages:this.packages}).then(res => {
+            this.$axios.post("cart/ChangeCart", {uid:localStorage.uid,rid:this.rid,commodities:this.commodities,packages:this.packages}).then(res => {
               let data=res.data;
             });
           },
@@ -456,6 +456,7 @@
                 let cc=0;
                 for(let c of data.commodities){
                   c.cIndex=cc;
+                  //c.num=0;
                   c.num=data.commodityNum[cc];
                   cc=cc+1;
                   c.K=1;
@@ -476,6 +477,7 @@
                 }
                 let pp=0;
                 for(let p of data.packages){
+                  //p.num=0;
                   p.num=data.packageNum[pp];
                   p.pIndex=pp;
                   pp=pp+1;
