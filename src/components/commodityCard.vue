@@ -82,8 +82,8 @@
     width: 33%;
     display: flex;
     justify-content: center;
-    padding: 30px 20px 30px 20px;
-    border: 0.2px lightgrey solid;
+    padding: 30px 10px 30px 10px;
+    border-bottom: 0.2px lightgrey solid;
     flex-wrap: wrap;
     cursor: pointer;
   }

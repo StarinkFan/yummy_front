@@ -50,16 +50,16 @@
       <h4 style="font-size: 20px"><b>添加新地址</b></h4>
       <location-selector @addressSelected="addressSelected(arguments)"></location-selector>
       <div style="display: flex; justify-content: space-around">
-        <el-button style="width: 150px" :disabled="newLocation === '' " round>添  加</el-button>
+        <el-button style="width: 150px" :disabled="newLocation === '' " @click="addAddress" round>添  加</el-button>
         <el-button style="width: 150px" @click="hideLocationCard" round>取  消</el-button>
       </div>
     </el-card>
     <el-card id="changeLocationCard">
-      <h4 style="font-size: 20px;margin-left: -100px;"><b>切换地址</b></h4>
+      <h4 style="font-size: 20px;margin-left: -20px;margin-bottom: 20px;color: darkorange"><b>切换地址</b></h4>
       <label v-for="(item,index) in addresses" :key="index"  id="cLocation">
         <input @click="getRadioVal(item.location)" type="radio" name="type" :value="item.location">{{item.location}}
       </label>
-      <div style="display: flex; justify-content: space-around">
+      <div style="display: flex; justify-content: space-around; margin-top: 20px">
         <el-button style="width: 150px" @click="changeL" round>确  定</el-button>
         <el-button style="width: 150px" @click="hideChangeLocationCard" round>取  消</el-button>
       </div>
@@ -212,6 +212,22 @@
           this.addresses=data2.addresses;
           this.location=data2.addresses[0].location;
         });*/
+      },
+      addAddress(){
+        this.$axios.post("/address/add", {"uid":localStorage.uid, "region": this.newRegion, "location": this.newLocation}).then(res => {
+         if(res.data===true){
+           this.$message({
+             message: "添加成功",
+             type: "success"
+           });
+           this.hideChangeLocationCard();
+         }else{
+           this.$message({
+             message: "添加失败",
+             type: "error"
+           });
+         }
+        });
       }
     }
   }
