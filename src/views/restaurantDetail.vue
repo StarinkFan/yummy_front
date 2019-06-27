@@ -456,7 +456,7 @@
                 let cc=0;
                 for(let c of data.commodities){
                   c.cIndex=cc;
-                  c.num=0;
+                  c.num=data.commodityNum[cc];
                   cc=cc+1;
                   c.K=1;
                   switch (c.kind){
@@ -476,7 +476,7 @@
                 }
                 let pp=0;
                 for(let p of data.packages){
-                  p.num=0;
+                  p.num=data.packageNum[pp];
                   p.pIndex=pp;
                   pp=pp+1;
                   p.K=0;
