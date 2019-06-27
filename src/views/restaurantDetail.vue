@@ -62,7 +62,6 @@
             <h4 id="cKind1">主食</h4>
             <div style="display: flex; justify-content: space-between;width: 100%;flex-wrap: wrap">
             <commodityCard
-              ref="zhushi"
               v-for="item in staple"
               v-bind:key="item.num"
               :photo="item.photo"
@@ -85,7 +84,7 @@
             <div style="display: flex; justify-content: space-between;width: 100%;flex-wrap: wrap">
               <commodityCard
                 v-for="item in snack"
-                v-bind:key="item.cIndex"
+                v-bind:key="item.num"
                 :photo="item.photo"
                 :name="item.name"
                 :rid="item.rid"
@@ -106,7 +105,7 @@
             <div style="display: flex; justify-content: space-between;width: 100%;flex-wrap: wrap">
               <commodityCard
                 v-for="item in drink"
-                v-bind:key="item.cIndex"
+                v-bind:key="item.num"
                 :photo="item.photo"
                 :name="item.name"
                 :rid="item.rid"
@@ -127,7 +126,7 @@
             <div style="display: flex; justify-content: space-between;width: 100%;flex-wrap: wrap">
               <commodityCard
                 v-for="item in others"
-                v-bind:key="item.cIndex"
+                v-bind:key="item.num"
                 :photo="item.photo"
                 :name="item.name"
                 :rid="item.rid"
@@ -334,10 +333,11 @@
           listChangeNum(val){
 
             if(val.K=1){
-              console.log(val);
+              console.log("commodity"+val.K);
               this.changeNum(val.num,val.cIndex,val.kind);
             }
             else{
+              console.log("commodity"+val.K);
               this.changePNum();
             }
           },
@@ -360,7 +360,9 @@
           this.others.forEach(val => {
             val.num = 0
           })
+          this.saveCart();
           this.isShow = false
+
         },
         toggle(){
           console.log(this.totalCount);
@@ -410,9 +412,10 @@
             this.saveCart();
           },
           saveCart(){
+            console.log("saveCart");
             //console.log(this.commodities);
             //console.log(this.packages);
-            this.$axios.post("cart/ChangeCart", {uid:localStorage.uid,rid:this.rid,commodities:this.commodities,packages:this.packages}).then(res => {
+            this.$axios.post("cart/ChangeCart", {uid:localStorage.uid,rid:this.rid,commodities:JSON.stringify(this.commodities),packages:JSON.stringify(this.packages)}).then(res => {
               let data=res.data;
             });
           },
@@ -586,7 +589,7 @@
                 type: "error"
               });
             }
-
+            this.clearCart();
           });
         },
         showLocationCard(){
@@ -600,6 +603,22 @@
         addressSelected(msg){
             this.newRegion=msg[1];
             this.newLocation=msg[0];
+        },
+        addAddress(){
+          this.$axios.post("/address/add", {"uid":localStorage.uid, "region": this.newRegion, "location": this.newLocation}).then(res => {
+            if(res.data===true){
+              this.$message({
+                message: "添加成功",
+                type: "success"
+              });
+              this.hideChangeLocationCard();
+            }else{
+              this.$message({
+                message: "添加失败",
+                type: "error"
+              });
+            }
+          });
         }
       },
 
@@ -663,24 +682,10 @@
               buy.push(val)
             }
           })
+          console.log(buy)
           return buy
         },
-        addAddress(){
-          this.$axios.post("/address/add", {"uid":localStorage.uid, "region": this.newRegion, "location": this.newLocation}).then(res => {
-            if(res.data===true){
-              this.$message({
-                message: "添加成功",
-                type: "success"
-              });
-              this.hideChangeLocationCard();
-            }else{
-              this.$message({
-                message: "添加失败",
-                type: "error"
-              });
-            }
-          });
-        }
+
       }
     }
 </script>
