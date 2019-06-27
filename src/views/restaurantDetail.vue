@@ -201,16 +201,16 @@
       <h4 style="font-size: 20px"><b>添加新地址</b></h4>
       <location-selector @addressSelected="addressSelected"></location-selector>
       <div style="display: flex; justify-content: space-around">
-        <el-button style="width: 150px" round>添  加</el-button>
+        <el-button style="width: 150px" @click="addAddress" :disabled="newLocation === '' " round>添  加</el-button>
         <el-button style="width: 150px" @click="hideLocationCard" round>取  消</el-button>
       </div>
     </el-card>
     <el-card id="changeLocationCard">
-      <h4 style="font-size: 20px;margin-left: -100px;"><b>切换地址</b></h4>
+      <h4 style="font-size: 20px;margin-left: -250px;margin-bottom: 20px;color: darkorange"><b>切换地址</b></h4>
       <label v-for="(item,index) in addresses" :key="index"  id="cLocation">
         <input @click="getRadioVal(item.location)" type="radio" name="type" :value="item.location">{{item.location}}
       </label>
-      <div style="display: flex; justify-content: space-around">
+      <div style="display: flex; justify-content: space-around;margin-top: 20px">
         <el-button style="width: 150px" @click="changeL" round>确  定</el-button>
         <el-button style="width: 150px" @click="hideChangeLocationCard" round>取  消</el-button>
       </div>
@@ -247,25 +247,24 @@
         <el-table
           :data="buy"
           stripe
-          height="500"
+          max-height="420"
           style="overflow-x: hidden"
           class="list">
           <el-table-column
             fixed
             label="名称"
-            width="140"
             prop="name">
           </el-table-column>
           <el-table-column
             fixed
             label="价格"
-            width="100"
+            width="60"
             prop="price">
           </el-table-column>
           <el-table-column
             fixed
             label="购买数量"
-            width="155">
+            width="150">
             <template slot-scope="scope">
               <el-input-number v-model="scope.row.num" :min="0" :max="10" label="描述文字" style="width: 100%" @change="listChangeNum(scope.row)"></el-input-number>
             </template>
@@ -663,6 +662,22 @@
             }
           })
           return buy
+        },
+        addAddress(){
+          this.$axios.post("/address/add", {"uid":localStorage.uid, "region": this.newRegion, "location": this.newLocation}).then(res => {
+            if(res.data===true){
+              this.$message({
+                message: "添加成功",
+                type: "success"
+              });
+              this.hideChangeLocationCard();
+            }else{
+              this.$message({
+                message: "添加失败",
+                type: "error"
+              });
+            }
+          });
         }
       }
     }
@@ -670,7 +685,7 @@
 
 <style scoped>
 .main{
-  width: 63%;
+  width: 66%;
   min-height: 500px;
   margin-bottom: 60px;
   padding: 5px;
@@ -745,6 +760,7 @@
 #kindSelector li:hover{
   color:dodgerblue;
 }
+
 /*#kindSelector li.bgcolor{
   color:dodgerblue;
 }*/
@@ -766,13 +782,13 @@
 }
 
 .shopcart {
-  width: 25%;
+  width: 30%;
   background: #514f4f;
   position: fixed;
   bottom: 0;
   height: 50px;
   display: flex;
-  margin-left: -500px;
+  left:0;
 }
 .left{
   flex:1;
@@ -788,6 +804,7 @@
   float: left;
   background:url(../assets/img/timg.jpg);
   background-size: 100%;
+  cursor: pointer;
 }
 .circle .num-red {
   position: absolute;
@@ -841,23 +858,24 @@
   font-size: 16px;
 }
   .shop-list{
-    width: 25%;
+    width: 30%;
     background: #FFF;
     position: fixed;
-    height: 250px;
+    max-height: 480px;
     display: block;
-    margin-left: -500px;
+    left:0;
     border: 0.2px lightgrey solid;
-    bottom: 330px;
+    bottom: 60px;
   }
 .shop-list-title{
-  font-size: 16px;
+  font-size: 15px;
   color: dodgerblue;
-  display: flex;
-  margin-left: 300px;
+  float: right;
+  right: 10px;
+  padding-top: 10px;
+  cursor: pointer;
 }
 shop-list-wrapper{
-
 }
 shop-list-content{
 
