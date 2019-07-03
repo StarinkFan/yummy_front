@@ -63,7 +63,7 @@
             <div style="display: flex; justify-content: space-between;width: 100%;flex-wrap: wrap">
             <commodityCard
               v-for="item in staple"
-              v-bind:key="item.num"
+              v-bind:key="item.cid"
               :photo="item.photo"
               :name="item.name"
               :rid="item.rid"
@@ -84,7 +84,7 @@
             <div style="display: flex; justify-content: space-between;width: 100%;flex-wrap: wrap">
               <commodityCard
                 v-for="item in snack"
-                v-bind:key="item.num"
+                v-bind:key="item.cid"
                 :photo="item.photo"
                 :name="item.name"
                 :rid="item.rid"
@@ -105,7 +105,7 @@
             <div style="display: flex; justify-content: space-between;width: 100%;flex-wrap: wrap">
               <commodityCard
                 v-for="item in drink"
-                v-bind:key="item.num"
+                v-bind:key="item.cid"
                 :photo="item.photo"
                 :name="item.name"
                 :rid="item.rid"
@@ -126,7 +126,7 @@
             <div style="display: flex; justify-content: space-between;width: 100%;flex-wrap: wrap">
               <commodityCard
                 v-for="item in others"
-                v-bind:key="item.num"
+                v-bind:key="item.cid"
                 :photo="item.photo"
                 :name="item.name"
                 :rid="item.rid"

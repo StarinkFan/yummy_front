@@ -220,7 +220,7 @@
              message: "添加成功",
              type: "success"
            });
-           this.hideChangeLocationCard();
+           this.hideLocationCard();
          }else{
            this.$message({
              message: "添加失败",

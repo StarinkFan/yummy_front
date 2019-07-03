@@ -67,7 +67,7 @@
       methods:{
         savePersonalInfo(){
           this.info.uid=localStorage.uid;
-          console.log(this.info.uid);
+          console.log(this.info.addresses.length);
           this.$axios.post("/user/saveInfo", this.info).then(res => {
             let data=res.data;
             console.log(data);

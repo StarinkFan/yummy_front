@@ -107,7 +107,7 @@
         newItem:{},
         selectedCommodity: {},
         validCommodities:{},
-        num:"1",
+        num:"",
         packages: [
           {
             name: "套餐一",

@@ -57,7 +57,7 @@
       <br>
       <el-tag type="warning" v-if="order.state === 0">剩余付款时间: {{leftTime}}</el-tag>
     </el-card>
-    <el-card class="box-card main" style="width: 40%;margin-left: 30%; margin-top: 50px"  v-if="paying">
+    <el-card class="box-card main" style="width: 40%;margin-left: 30%; margin-top: 50px; margin-bottom: 160px"  v-if="paying">
       <h3 style="float: top;" align="center">付款</h3>
       <el-input id="account" class="loginInput" v-model="account" style="margin-top: 6%;" placeholder="请输入银行账户" maxLength="10"></el-input>
       <el-input id="password" type="password" v-model="password" class="loginInput" style="margin-top: 8%;" align="center" placeholder="请输入密码" maxLength="15"></el-input><br>
