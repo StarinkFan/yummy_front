@@ -22,9 +22,9 @@
 </template>
 
 <script>
-let title = "NJU核真录";
+let title = "yummy订餐";
 let url = "http://193.112.82.110:3030/";
-let picurl = "../assets/img/hzl_logo.png";
+let picurl = "/static/pic/logo_yellow.png";
 
 export default {
   name: "rightBar",
@@ -54,7 +54,7 @@ export default {
           ? "Command/Cmd"
           : "CTRL";
       if (document.all) {
-        window.external.addFavorite("http://localhost:8080", "trust平台");
+        window.external.addFavorite("http://localhost:8080", "yummy");
       } else if (window.sidebar) {
         window.sidebar.addPanel("trust平台", "http://localhost:8080", "");
       } else {

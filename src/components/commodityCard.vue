@@ -5,7 +5,7 @@
     <div id="detail" style="width: 100%;height: 13px">
       <p>{{description}}</p>
     </div>
-    <el-input-number style="width: 60%;margin-right: -50px;margin-top: 15px;" ref="num" v-model="currentIndex" :min="0" :max="10" label="描述文字" @change="change()"></el-input-number>
+    <el-input-number style="width: 60%;margin-right: -50px;margin-top: 15px;" ref="num" v-model="num" :min="0" :max="10" label="描述文字" @change="change()"></el-input-number>
   </div>
 </template>
 
@@ -14,7 +14,7 @@
         name: "commodityCard",
       data(){
         return {
-          currentIndex:this.num,
+          //currentIndex:this.num,
         }
       },
       props: {

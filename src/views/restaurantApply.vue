@@ -18,7 +18,7 @@
         </el-select>
       </p><br>
       <p>地址：</p>
-      <location-selector ref="loc" @addressSelected="addressSelected(arguments)"></location-selector>
+      <location-selector ref="loc" @addressSelected="addressSelected(arguments)" style="width: 90%"></location-selector>
       <pics-uploader ref="pics"></pics-uploader>
 
     </div>
