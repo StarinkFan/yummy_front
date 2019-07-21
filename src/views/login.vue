@@ -11,7 +11,7 @@
         <a href="/findPassword" style="float: right;margin-right: 8%;display: inline;margin-top: 3%">忘记密码？</a>
         <el-button type="primary" id="login" v-on:click="login()" round>登录</el-button>
         <div style="width: 100%;text-align: center;margin-top: 20px">
-          <a href="/signup" style="font-size: 16px;">即刻注册</a>
+          <a href="/signup" style="font-size: 16px; color: dodgerblue">即刻注册</a>
         </div>
       </el-card>
 
